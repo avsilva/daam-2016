@@ -8,5 +8,6 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:background="#DCEDC8"
-    tools:context="pt.iscte.daam.pinpointhint.RegistrationActivity">
+    tools:context="pt.iscte.daam.pinpointhint.RegistrationActivity"
+    android:id="@+id/id_registration">
 </RelativeLayout>
