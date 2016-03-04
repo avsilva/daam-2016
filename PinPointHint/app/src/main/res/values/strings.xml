@@ -10,4 +10,8 @@
     <string name="tvRegPasswordConfirm">Confirmação da Palavra-Passe</string>
     <string name="bRegSubmit">SUBMETER</string>
     <string name="regSubmitMessageOk">Dados submetidos com sucesso</string>
+
+    <!-- Strings used within the submission activity -->
+    <string name="submission_activity_title">Submeter Sugestão</string>
+
 </resources>
