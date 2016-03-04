@@ -6,6 +6,9 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+/**
+ * This class represents the VIEW associated to the registration
+ */
 public class RegistrationActivity extends AppCompatActivity implements View.OnClickListener {
     private static final String EMPTY_STRING = "";
 
@@ -14,7 +17,6 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
     private EditText etRegPhone;
     private EditText etRegPassword;
     private EditText etRegPasswordConfirm;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,12 +51,12 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
         if (v.getId() == R.id.etRegPasswordConfirm) {
             etRegPasswordConfirm.setText(EMPTY_STRING);
         }
-
     }
 
     /**
+     * This method is used to handle the on click event performed in the submission button.
      *
-     * @param v
+     * @param v The view on which the event is performed.
      */
     public void submit(View v) {
         Toast toast = Toast.makeText(getApplicationContext(),
@@ -63,7 +65,7 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
     }
 
     /**
-     * TODO
+     * This method is used to setup listeners on the components of this activity.
      */
     private void addListeners() {
         etRegName.setOnClickListener(this);
@@ -74,7 +76,8 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
     }
 
     /**
-     * TODO
+     * Thist method is used to retrieved the data associated to each edit text defined
+     * in this activity, in order to setup the instance attributes of this activity.
      */
     private void retrieveFieldInformation() {
         etRegName = (EditText) findViewById(R.id.etRegName);

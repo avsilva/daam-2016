@@ -66,6 +66,16 @@
         android:layout_centerVertical="true"
         android:layout_alignParentStart="true" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@string/tvRegPasswordConfirm"
+        android:id="@+id/tvRegPasswordConfirm"
+        android:layout_marginTop="30dp"
+        android:layout_below="@+id/etRegPassword"
+        android:layout_alignParentStart="true" />
+
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -76,15 +86,6 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentStart="true" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="@string/tvRegPasswordConfirm"
-        android:id="@+id/tvRegPasswordConfirm"
-        android:layout_marginTop="30dp"
-        android:layout_below="@+id/etRegPassword"
-        android:layout_alignParentStart="true" />
 
     <EditText
         android:layout_width="wrap_content"
