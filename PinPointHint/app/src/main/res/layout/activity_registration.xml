@@ -10,4 +10,90 @@
     android:background="#DCEDC8"
     tools:context="pt.iscte.daam.pinpointhint.RegistrationActivity"
     android:id="@+id/id_registration">
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:text="@string/etRegName"
+        android:ems="10"
+        android:id="@+id/etRegName"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textEmailAddress"
+        android:ems="10"
+        android:id="@+id/etRegEmail"
+        android:layout_below="@+id/etRegName"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="37dp"
+        android:text="@string/etRegEmail"
+        android:layout_alignParentEnd="true" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="phone"
+        android:ems="10"
+        android:id="@+id/etRegPhone"
+        android:layout_below="@+id/etRegEmail"
+        android:layout_marginTop="35dp"
+        android:text="@string/etRegPhone"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentStart="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/bRegSubmit"
+        android:id="@+id/bRegSubmit"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:background="#8DC44A"
+        android:onClick="submit"
+        android:textColor="@android:color/white" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@string/tvRegPassword"
+        android:id="@+id/tvRegPassword"
+        android:layout_centerVertical="true"
+        android:layout_alignParentStart="true" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textPassword"
+        android:ems="10"
+        android:id="@+id/etRegPassword"
+        android:layout_below="@+id/tvRegPassword"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@string/tvRegPasswordConfirm"
+        android:id="@+id/tvRegPasswordConfirm"
+        android:layout_marginTop="30dp"
+        android:layout_below="@+id/etRegPassword"
+        android:layout_alignParentStart="true" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textPassword"
+        android:ems="10"
+        android:id="@+id/etRegPasswordConfirm"
+        android:layout_below="@+id/tvRegPasswordConfirm"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true" />
+
 </RelativeLayout>

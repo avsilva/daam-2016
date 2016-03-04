@@ -1,4 +1,13 @@
 <resources>
     <string name="app_name">PinPointHint</string>
+
+    <!-- Strings used within the registration activity -->
     <string name="registration_activity_title">Registo</string>
+    <string name="etRegName">Nome</string>
+    <string name="etRegEmail">Correio Electrónico</string>
+    <string name="etRegPhone">Contacto Telefónico</string>
+    <string name="tvRegPassword">Palavra-Passe</string>
+    <string name="tvRegPasswordConfirm">Confirmação da Palavra-Passe</string>
+    <string name="bRegSubmit">SUBMETER</string>
+    <string name="regSubmitMessageOk">Dados submetidos com sucesso</string>
 </resources>
