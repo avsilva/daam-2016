@@ -5,7 +5,7 @@
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
-        android:label="@string/registration_activity_title"
+        android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
@@ -13,17 +13,16 @@
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
         <activity
             android:name=".RegistrationActivity"
-            android:label="@string/registration_activity_title"></activity>
-
+            android:label="@string/registration_activity_title" />
         <activity android:name=".SubmissionActivity"
-            android:label="@string/submission_activity_title"></activity>
+            android:label="@string/submission_activity_title"/>
+        <activity android:name=".SubmissionClassificationActivity"
+            android:label="@string/submission_activity_title"/>
     </application>
-
 </manifest>

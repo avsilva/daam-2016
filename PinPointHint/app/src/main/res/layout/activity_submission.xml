@@ -1,12 +1,81 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/id_submission"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#DCEDC8"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    android:background="#DCEDC8"
     tools:context="pt.iscte.daam.pinpointhint.SubmissionActivity">
+
+    <EditText
+        android:id="@+id/etSubDescription"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:ems="10"
+        android:inputType="textMultiLine"
+        android:text="@string/etSubDescription" />
+
+    <EditText
+        android:id="@+id/etSubEmail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true"
+        android:ems="10"
+        android:inputType="textEmailAddress"
+        android:text="@string/etSubEmail" />
+
+    <Button
+        android:id="@+id/btSubPhoto"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/etSubEmail"
+        android:layout_marginTop="28dp"
+        android:background="#8DC44A"
+        android:text="@string/bSubPhoto"
+        android:onClick="photo"
+        android:textColor="@android:color/white" />
+
+    <EditText
+        android:id="@+id/etSubGPS"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/etSubEmail"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentStart="true"
+        android:text="@string/etSubGPS" />
+
+    <!-- The image should be invisible while the image was not loaded.
+        After, the android icon will appear indicating that image was loaded
+        sucessfully.
+    -->
+    <ImageView
+        android:id="@+id/ivSub"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/ic_launcher"
+        android:visibility="visible"
+        android:layout_alignTop="@+id/btSubPhoto"
+        android:layout_alignEnd="@+id/etSubEmail" />
+
+    <Button
+        android:id="@+id/btSubNext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="36dp"
+        android:background="#8DC44A"
+        android:onClick="next"
+        android:text="@string/bSubNext"
+        android:textColor="@android:color/white" />
 </RelativeLayout>

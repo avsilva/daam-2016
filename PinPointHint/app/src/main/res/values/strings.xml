@@ -13,5 +13,12 @@
 
     <!-- Strings used within the submission activity -->
     <string name="submission_activity_title">Submeter Sugestão</string>
-
+    <string name="etSubDescription">Descrição da Sugestão</string>
+    <string name="etSubEmail">Destinatário</string>
+    <string name="etSubGPS">Coordenadas GPS</string>
+    <string name="bSubSubmit">SUBMETER</string>
+    <string name="bSubPhoto">FOTOGRAFIA</string>
+    <string name="bSubNext">SEGUINTE</string>
+    <string name="photoLoaded">Foto carregada com sucesso</string>
+    <string name="submissionProcessed">Submissão realizada com sucesso</string>
 </resources>

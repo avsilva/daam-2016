@@ -6,12 +6,12 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import pt.iscte.daam.pinpointhint.common.ActivityUtils;
+
 /**
  * This class represents the VIEW associated to the registration
  */
 public class RegistrationActivity extends AppCompatActivity implements View.OnClickListener {
-    private static final String EMPTY_STRING = "";
-
     private EditText etRegName;
     private EditText etRegEmail;
     private EditText etRegPhone;
@@ -33,23 +33,23 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.etRegName) {
-            etRegName.setText(EMPTY_STRING);
+            etRegName.setText(ActivityUtils.EMPTY_STRING);
         }
 
         if (v.getId() == R.id.etRegEmail) {
-            etRegEmail.setText(EMPTY_STRING);
+            etRegEmail.setText(ActivityUtils.EMPTY_STRING);
         }
 
         if (v.getId() == R.id.etRegPhone) {
-            etRegPhone.setText(EMPTY_STRING);
+            etRegPhone.setText(ActivityUtils.EMPTY_STRING);
         }
 
         if (v.getId() == R.id.etRegPassword) {
-            etRegPassword.setText(EMPTY_STRING);
+            etRegPassword.setText(ActivityUtils.EMPTY_STRING);
         }
 
         if (v.getId() == R.id.etRegPasswordConfirm) {
-            etRegPasswordConfirm.setText(EMPTY_STRING);
+            etRegPasswordConfirm.setText(ActivityUtils.EMPTY_STRING);
         }
     }
 
