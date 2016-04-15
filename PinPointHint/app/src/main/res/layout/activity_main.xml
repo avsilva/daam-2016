@@ -21,10 +21,29 @@
         android:layout_height="wrap_content"
         android:text="Ver mapa"
         android:id="@+id/bMapShow"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="67dp"
         android:background="#8DC44A"
         android:onClick="showMap"
-        android:nestedScrollingEnabled="true" />
+        android:nestedScrollingEnabled="true"
+        android:layout_below="@+id/bRegistar"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="47dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Login"
+        android:id="@+id/bLogin"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:onClick="showLogin" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Registar"
+        android:id="@+id/bRegistar"
+        android:layout_below="@+id/bLogin"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="32dp"
+        android:onClick="showRegistar" />
 </RelativeLayout>

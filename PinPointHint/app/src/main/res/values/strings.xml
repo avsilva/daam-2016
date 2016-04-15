@@ -6,6 +6,8 @@
     <string name="etRegName">Nome</string>
     <string name="etRegEmail">Correio Electrónico</string>
     <string name="etRegPhone">Contacto Telefónico</string>
+    <string name="etLoginEmail">Email</string>
+    <string name="etLoginPassword">Password</string>
     <string name="tvRegPassword">Palavra-Passe</string>
     <string name="tvRegPasswordConfirm">Confirmação da Palavra-Passe</string>
     <string name="bRegSubmit">SUBMETER</string>
@@ -22,4 +24,5 @@
     <string name="photoLoaded">Foto carregada com sucesso</string>
     <string name="submissionProcessed">Submissão realizada com sucesso</string>
     <string name="title_activity_maps">Map</string>
+
 </resources>

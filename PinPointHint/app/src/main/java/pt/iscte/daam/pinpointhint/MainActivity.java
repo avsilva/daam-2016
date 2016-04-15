@@ -26,4 +26,12 @@ public class MainActivity extends AppCompatActivity {
         Intent mapIntent = new Intent(this, MapsActivity.class);
         startActivity(mapIntent);
     }
+    public void showRegistar(View v){
+        Intent regIntent = new Intent(this, RegistrationActivity.class);
+        startActivity(regIntent);
+    }
+    public void showLogin(View v){
+        Intent loginIntent = new Intent (this, LoginActivity.class);
+        startActivity(loginIntent);
+    }
 }
