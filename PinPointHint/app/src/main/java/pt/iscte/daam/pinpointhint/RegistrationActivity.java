@@ -1,10 +1,20 @@
 package pt.iscte.daam.pinpointhint;
 
+import android.app.AlertDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import pt.iscte.daam.pinpointhint.common.ActivityUtils;
 
@@ -17,6 +27,7 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
     private EditText etRegPhone;
     private EditText etRegPassword;
     private EditText etRegPasswordConfirm;
+    private Button bRegSubmit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +84,39 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
         etRegPhone.setOnClickListener(this);
         etRegPassword.setOnClickListener(this);
         etRegPasswordConfirm.setOnClickListener(this);
+        bRegSubmit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final String nome = etRegName.getText().toString();
+                final String email = etRegEmail.getText().toString();
+                final String password = etRegPassword.getText().toString();
+
+                Response.Listener<String> responseListener = new Response.Listener<String>(){
+
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            JSONObject jsonResponse = new JSONObject(response);
+                            boolean success = jsonResponse.getBoolean("success");
+                            if (success){
+                                Intent intent = new Intent(RegistrationActivity.this, LoginActivity.class);
+                                RegistrationActivity.this.startActivity(intent);
+                            } else{
+                                AlertDialog.Builder builder = new AlertDialog.Builder(RegistrationActivity.this);
+                                builder.setMessage("O registo falhou").setNegativeButton("Retry",null).create().show();
+                            }
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                };
+
+                RegistrationRequest registrationRequest = new RegistrationRequest(nome,email,password,responseListener);
+                RequestQueue queue = Volley.newRequestQueue(RegistrationActivity.this);
+                queue.add(registrationRequest);
+            }
+        });
     }
 
     /**
@@ -85,5 +129,7 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
         etRegPhone = (EditText) findViewById(R.id.etRegPhone);
         etRegPassword = (EditText) findViewById(R.id.etRegPassword);
         etRegPasswordConfirm = (EditText) findViewById(R.id.etRegPasswordConfirm);
+        bRegSubmit = (Button) findViewById(R.id.bRegSubmit);
+
     }
 }
