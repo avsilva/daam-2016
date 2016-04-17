@@ -3,48 +3,97 @@ package pt.iscte.daam.pinpointhint;
 import android.app.Activity;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.google.android.gms.appindexing.Action;
+import com.google.android.gms.appindexing.AppIndex;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.maps.android.geojson.GeoJsonFeature;
+import com.google.maps.android.geojson.GeoJsonLayer;
+import com.google.maps.android.geojson.GeoJsonPointStyle;
+import com.google.maps.android.ui.IconGenerator;
+
 import android.location.LocationListener;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
     private PinPointRestClient pins;
 
+    private final static String mLogTag = "pin point log";
+    private GeoJsonLayer mLayer;
+
+    // GeoJSON file to download
+    //private final String mGeoJsonUrl = "http://46.101.41.76/pinsgeojson/";
+    private final String mGeoJsonUrl = "http://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson";
+
+    /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
+    private GoogleApiClient client;
+
+    protected GoogleMap getMap() {
+        return mMap;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
 
+        //TODO: get current location
         /*MyLocation appLocationManager = new MyLocation(getBaseContext());
         String latitude = appLocationManager.getLatitude();
         appLocationManager.getLongitude();
         Toast.makeText(getBaseContext(), "Latitude: "+latitude, Toast.LENGTH_LONG).show();*/
 
-        if(isConnected()){
+        if (isConnected()) {
             Toast.makeText(getBaseContext(), "Connection ready!", Toast.LENGTH_LONG).show();
         } else {
             Toast.makeText(getBaseContext(), "Connection not ready!", Toast.LENGTH_LONG).show();
         }
 
+
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
+        setUpMap();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
+    }
+
+
+    private void addIcon(IconGenerator iconFactory, CharSequence text, LatLng position) {
+        MarkerOptions markerOptions = new MarkerOptions().
+                icon(BitmapDescriptorFactory.fromBitmap(iconFactory.makeIcon(text))).
+                position(position).
+                anchor(iconFactory.getAnchorU(), iconFactory.getAnchorV());
+
+        mMap.addMarker(markerOptions);
     }
 
 
@@ -58,22 +107,50 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      * installed Google Play services and returned to the app.
      */
     @Override
-    public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
+    public void onMapReady(GoogleMap map) {
+        //mMap = googleMap;
+        if (mMap != null) {
+            return;
+        }
+        mMap = map;
 
         // Add a marker in Lisbon and move the camera
         LatLng lisbon = new LatLng(38, -9);
+
+        //TODO: modify bubble style
+        /*IconGenerator iconFactory = new IconGenerator(this);
+        iconFactory.setStyle(IconGenerator.STYLE_GREEN);
+        iconFactory.setContentRotation(90);
+        addIcon(iconFactory, "lisbon", lisbon);*/
+
+
         //mMap.addMarker(new MarkerOptions().position(lisbon).title("Marker in Portugal"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(lisbon));
+
+        //add bubble to map via rest api call
         try {
             pins = new PinPointRestClient(getBaseContext(), mMap);
+
+            //reads data from rest api and shows simple bubbles
+            //pins.getPoints1();
+
+            //reads data from rest api and shows clustered bubbles
+            pins.getPoints2();
+
+            //reads data from file
+            //pins.getPoints3();
+
         } catch (IOException e) {
             e.printStackTrace();
         }
 
     }
 
-    public boolean isConnected(){
+    private void setUpMap() {
+        ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map)).getMapAsync(this);
+    }
+
+    public boolean isConnected() {
         ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Activity.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
         if (networkInfo != null && networkInfo.isConnected())
@@ -83,6 +160,43 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
 
+    @Override
+    public void onStart() {
+        super.onStart();
 
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client.connect();
+        Action viewAction = Action.newAction(
+                Action.TYPE_VIEW, // TODO: choose an action type.
+                "Maps Page", // TODO: Define a title for the content shown.
+                // TODO: If you have web page content that matches this app activity's content,
+                // make sure this auto-generated web page URL is correct.
+                // Otherwise, set the URL to null.
+                Uri.parse("http://host/path"),
+                // TODO: Make sure this auto-generated app deep link URI is correct.
+                Uri.parse("android-app://pt.iscte.daam.pinpointhint/http/host/path")
+        );
+        AppIndex.AppIndexApi.start(client, viewAction);
+    }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        Action viewAction = Action.newAction(
+                Action.TYPE_VIEW, // TODO: choose an action type.
+                "Maps Page", // TODO: Define a title for the content shown.
+                // TODO: If you have web page content that matches this app activity's content,
+                // make sure this auto-generated web page URL is correct.
+                // Otherwise, set the URL to null.
+                Uri.parse("http://host/path"),
+                // TODO: Make sure this auto-generated app deep link URI is correct.
+                Uri.parse("android-app://pt.iscte.daam.pinpointhint/http/host/path")
+        );
+        AppIndex.AppIndexApi.end(client, viewAction);
+        client.disconnect();
+    }
 }
