@@ -137,9 +137,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             //reads data from rest api and shows clustered bubbles
             pins.getPoints2();
 
-            //reads data from file
-            //pins.getPoints3();
-
         } catch (IOException e) {
             e.printStackTrace();
         }

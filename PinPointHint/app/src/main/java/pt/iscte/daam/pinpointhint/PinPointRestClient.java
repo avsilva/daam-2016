@@ -83,27 +83,6 @@ public class PinPointRestClient
         downloadGeoJsonFile.execute(mGeoJsonUrl);
     }
 
-    public void getPoints3(){
-
-        getMap().moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(51.503186, -0.126446), 10));
-        mClusterManager = new ClusterManager<Pin>(myContext, myMap);
-        myMap.setOnCameraChangeListener(mClusterManager);
-
-
-        try {
-            readItems();
-        } catch (JSONException e) {
-            Toast.makeText(myContext, "Problem reading list of markers.", Toast.LENGTH_LONG).show();
-        }
-
-    }
-
-    private void readItems() throws JSONException {
-        InputStream inputStream = myContext.getResources().openRawResource(R.raw.radar_search);
-        List<Pin> items = new PinGeoJonReader().read(inputStream);
-        mClusterManager.addItems(items);
-    }
-
 
     private class DownloadGeoJsonFile extends AsyncTask<String, Void, JSONObject> {
 
