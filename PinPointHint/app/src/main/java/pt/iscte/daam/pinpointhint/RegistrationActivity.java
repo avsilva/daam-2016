@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -15,6 +16,9 @@ import com.android.volley.toolbox.Volley;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import pt.iscte.daam.pinpointhint.common.ActivityUtils;
 
@@ -90,20 +94,33 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
                 final String nome = etRegName.getText().toString();
                 final String email = etRegEmail.getText().toString();
                 final String password = etRegPassword.getText().toString();
+                final String passwordConfirm=etRegPasswordConfirm.getText().toString();
+                if(!isValidNome(nome)){
+                    etRegName.setError("Nome inválido");
+                }
+                if (!isValidEmail(email)) {
+                    etRegEmail.setError("Email inválido");
+                }
+                if(!isValidPassword(password)){
+                    etRegPassword.setError("Password inválida");
+                }
+                if(!password.equals(passwordConfirm)){
+                    etRegPasswordConfirm.setError("Repita a password");
+                }
 
-                Response.Listener<String> responseListener = new Response.Listener<String>(){
+                Response.Listener<String> responseListener = new Response.Listener<String>() {
 
                     @Override
                     public void onResponse(String response) {
                         try {
                             JSONObject jsonResponse = new JSONObject(response);
                             boolean success = jsonResponse.getBoolean("success");
-                            if (success){
+                            if (success) {
                                 Intent intent = new Intent(RegistrationActivity.this, LoginActivity.class);
                                 RegistrationActivity.this.startActivity(intent);
-                            } else{
+                            } else {
                                 AlertDialog.Builder builder = new AlertDialog.Builder(RegistrationActivity.this);
-                                builder.setMessage("O registo falhou").setNegativeButton("Retry",null).create().show();
+                                builder.setMessage("O registo falhou").setNegativeButton("Retry", null).create().show();
                             }
 
                         } catch (JSONException e) {
@@ -112,7 +129,7 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
                     }
                 };
 
-                RegistrationRequest registrationRequest = new RegistrationRequest(nome,email,password,responseListener);
+                RegistrationRequest registrationRequest = new RegistrationRequest(nome, email, password, responseListener);
                 RequestQueue queue = Volley.newRequestQueue(RegistrationActivity.this);
                 queue.add(registrationRequest);
             }
@@ -132,4 +149,28 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
         bRegSubmit = (Button) findViewById(R.id.bRegSubmit);
 
     }
+
+    private boolean isValidEmail(String email){
+        String EMAIL_PATTERN = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
+                + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
+
+        Pattern pattern = Pattern.compile(EMAIL_PATTERN);
+        Matcher matcher = pattern.matcher(email);
+        return matcher.matches();
+    }
+    private boolean isValidPassword(String password){
+        if (password != null && password.length() > 6) {
+            return true;
+        }
+        return false;
+    }
+    private boolean isValidNome(String nome){
+        if(nome.length()>4 && !nome.matches(".*\\d.*")){
+            return true;
+        }
+        return false;
+
+
+    }
+
 }
