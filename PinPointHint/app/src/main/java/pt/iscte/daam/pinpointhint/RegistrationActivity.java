@@ -95,43 +95,57 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
                 final String email = etRegEmail.getText().toString();
                 final String password = etRegPassword.getText().toString();
                 final String passwordConfirm=etRegPasswordConfirm.getText().toString();
+                //boolean cancel=false;
                 if(!isValidNome(nome)){
                     etRegName.setError("Nome inválido");
-                }
+                    etRegName.requestFocus();
+                   // cancel=true;
+                } else
                 if (!isValidEmail(email)) {
                     etRegEmail.setError("Email inválido");
-                }
+                    etRegEmail.requestFocus();
+                   // cancel=true;
+                } else
                 if(!isValidPassword(password)){
                     etRegPassword.setError("Password inválida");
-                }
+                    etRegPassword.requestFocus();
+                //    cancel=true;
+                } else
                 if(!password.equals(passwordConfirm)){
                     etRegPasswordConfirm.setError("Repita a password");
-                }
+                    etRegPasswordConfirm.requestFocus();
+                //    cancel=true;
+                } else{
+                //if(cancel){
+                //    AlertDialog.Builder builder = new AlertDialog.Builder(RegistrationActivity.this);
+                //    builder.setMessage("Campos inválidos").setNegativeButton("Retry", null).create().show();
 
-                Response.Listener<String> responseListener = new Response.Listener<String>() {
+                //} else {
+                    Response.Listener<String> responseListener = new Response.Listener<String>() {
 
-                    @Override
-                    public void onResponse(String response) {
-                        try {
-                            JSONObject jsonResponse = new JSONObject(response);
-                            boolean success = jsonResponse.getBoolean("success");
-                            if (success) {
-                                Intent intent = new Intent(RegistrationActivity.this, LoginActivity.class);
-                                RegistrationActivity.this.startActivity(intent);
-                            } else {
-                                AlertDialog.Builder builder = new AlertDialog.Builder(RegistrationActivity.this);
-                                builder.setMessage("O registo falhou").setNegativeButton("Retry", null).create().show();
+                        @Override
+                        public void onResponse(String response) {
+                            try {
+                                JSONObject jsonResponse = new JSONObject(response);
+                                boolean success = jsonResponse.getBoolean("success");
+                                if (success) {
+                                    Intent intent = new Intent(RegistrationActivity.this, LoginActivity.class);
+                                    RegistrationActivity.this.startActivity(intent);
+                                } else {
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(RegistrationActivity.this);
+                                    builder.setMessage("O registo falhou").setNegativeButton("Retry", null).create().show();
+                                }
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
                             }
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
                         }
-                    }
-                };
+                    };
 
-                RegistrationRequest registrationRequest = new RegistrationRequest(nome, email, password, responseListener);
-                RequestQueue queue = Volley.newRequestQueue(RegistrationActivity.this);
-                queue.add(registrationRequest);
+                    RegistrationRequest registrationRequest = new RegistrationRequest(nome, email, password, responseListener);
+                    RequestQueue queue = Volley.newRequestQueue(RegistrationActivity.this);
+                    queue.add(registrationRequest);
+                }
             }
         });
     }
