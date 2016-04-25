@@ -1,8 +1,12 @@
 package pt.iscte.daam.pinpointhint;
 
 import android.content.Context;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -12,10 +16,8 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
-import com.google.maps.android.clustering.algo.Algorithm;
-import com.google.maps.android.clustering.algo.GridBasedAlgorithm;
-import com.google.maps.android.clustering.algo.PreCachingAlgorithmDecorator;
 import com.google.maps.android.geojson.GeoJsonFeature;
 import com.google.maps.android.geojson.GeoJsonLayer;
 import com.google.maps.android.geojson.GeoJsonPointStyle;
@@ -26,9 +28,12 @@ import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -53,6 +58,8 @@ public class PinPointRestClient
     private final static String mLogTag = "pin point log";
     private GeoJsonLayer mLayer;
     private ClusterManager<Pin> mClusterManager;
+    private Pin clickedClusterItem;
+    private Cluster clickedCluster;
 
     // GeoJSON file to download
     private final String mGeoJsonUrl = "http://46.101.41.76/pinsgeojson/";
@@ -73,18 +80,127 @@ public class PinPointRestClient
         return myMap;
     }
 
-    public void getPoints1(){
+    public void getPins(){
         getPinPoints points = new getPinPoints();
         points.execute();
     }
 
-    public void getPoints2(){
-        DownloadGeoJsonFile downloadGeoJsonFile = new DownloadGeoJsonFile();
-        downloadGeoJsonFile.execute(mGeoJsonUrl);
+    public void getClusters(){
+        LoadGeoJsonPins downloadGeoJsonPins = new LoadGeoJsonPins();
+        downloadGeoJsonPins.execute(mGeoJsonUrl);
     }
 
 
-    private class DownloadGeoJsonFile extends AsyncTask<String, Void, JSONObject> {
+    public void addNewPinPoint(JSONObject myJsonPin){
+        addPinPoint point = new addPinPoint();
+        point.execute(myJsonPin);
+    }
+
+    private class addPinPoint extends AsyncTask<JSONObject, Void, String> {
+
+        @Override
+        protected String doInBackground(JSONObject... params) {
+
+            String json = null;
+            HttpURLConnection urlConnection = null;
+            try {
+                urlConnection = (HttpURLConnection) url.openConnection();
+                urlConnection.setRequestMethod("POST");
+                urlConnection.setDoInput(true);
+                urlConnection.setDoOutput(true);
+
+                Uri.Builder builder = null;
+
+                try {
+                    builder = new Uri.Builder()
+                            .appendQueryParameter("descr", params[0].getString("descr"))
+                            .appendQueryParameter("name", params[0].getString("descr"))
+                            .appendQueryParameter("geom", params[0].getString("geometry"));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                String query = builder.build().getEncodedQuery();
+
+                OutputStream os = urlConnection.getOutputStream();
+                BufferedWriter writer = new BufferedWriter(
+                        new OutputStreamWriter(os, "UTF-8"));
+
+                writer.write(query);
+                writer.flush();
+                writer.close();
+                os.close();
+
+                int responseCode=urlConnection.getResponseCode();
+                if (responseCode == HttpURLConnection.HTTP_OK) {
+
+                    String line;
+                    BufferedReader br = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+                    while ((line=br.readLine()) != null) {
+                        json+=line;
+                    }
+                    Log.e(mLogTag, "SIM FUNCIONOU = "+ line);
+                }
+                else {
+                    json="";
+                    Log.e(mLogTag, "NAO FUNCIONOU = "+ responseCode);
+
+                }
+
+                InputStream in = new BufferedInputStream(urlConnection.getInputStream());
+                json = convertInputStreamToString(in);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+
+            return json;
+        }
+
+        @Override
+        protected void onPostExecute(String result)
+        {
+
+        }
+
+    }
+
+
+    private class MyCustomAdapterForItems implements GoogleMap.InfoWindowAdapter {
+
+        @Override
+        public View getInfoWindow(Marker marker) {
+            return null;
+        }
+
+        @Override
+        public View getInfoContents(Marker marker) {
+
+            String title = "";
+            if (clickedClusterItem != null) {
+                title = clickedClusterItem.getName();
+                /*for (Pin item : clickedClusterItem.getItems()) {
+                    // Extract data from each item in the cluster as needed
+                }*/
+            }
+            // Getting view from the layout file info_window_layout
+            LayoutInflater inflater = (LayoutInflater) myContext.getSystemService( Context.LAYOUT_INFLATER_SERVICE );
+            View v = inflater.inflate( R.layout.info_window_layout, null );
+
+            // Getting reference to the TextView to set title
+            TextView note = (TextView) v.findViewById(R.id.note);
+
+            //note.setText(marker.getTitle() );
+            note.setText(title);
+
+            // Returning the view containing InfoWindow contents
+            return v;
+
+
+        }
+    }
+
+    private class LoadGeoJsonPins extends AsyncTask<String, Void, JSONObject> {
 
         @Override
         protected JSONObject doInBackground(String... params) {
@@ -181,10 +297,37 @@ public class PinPointRestClient
                 getMap().moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(38.72, -9.18), 10));
                 mClusterManager = new ClusterManager<Pin>(myContext, myMap);
                 myMap.setOnCameraChangeListener(mClusterManager);
+
+                myMap.setInfoWindowAdapter(mClusterManager.getMarkerManager());
+                mClusterManager.getMarkerCollection().setOnInfoWindowAdapter(new MyCustomAdapterForItems());
+
+                myMap.setOnMarkerClickListener(mClusterManager);
+
+                mClusterManager.setOnClusterClickListener(new ClusterManager.OnClusterClickListener<Pin>() {
+                    @Override
+                    public boolean onClusterClick(Cluster<Pin> cluster) {
+                        //Log.e(mLogTag, "onClusterItemClick " + cluster.getSize());
+                        Toast.makeText(myContext, "ZOOM IN PLEASE!", Toast.LENGTH_LONG).show();
+                        clickedCluster = cluster; // remember for use later in the Adapter
+                        return false;
+                    }
+                });
+
+                mClusterManager.setOnClusterItemClickListener(new ClusterManager.OnClusterItemClickListener<Pin>() {
+                    @Override
+                    public boolean onClusterItemClick(Pin item) {
+                        Log.e(mLogTag, "onClusterItemClick " + item.getPosition().latitude);
+                        clickedClusterItem = item;
+                        return false;
+                    }
+                });
+
                 mClusterManager.addItems(items);
             }
         }
     }
+
+
 
 
     private class getPinPoints extends AsyncTask<String, Void, String>  {

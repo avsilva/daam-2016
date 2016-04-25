@@ -1,8 +1,10 @@
 package pt.iscte.daam.pinpointhint;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -22,10 +24,19 @@ public class SubmissionActivity extends AppCompatActivity implements View.OnClic
     private ImageView ivSub;
     private Button btSubNext;
 
+    private Double lat;
+    private final static String mLogTag = "pin point log";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_submission);
+
+        // get the Intent from calling activity
+        Intent i = getIntent();
+
+        lat = i.getDoubleExtra("LAT", 0.0);
+        Double lon = i.getDoubleExtra("LONG", 0.0);
 
         //Retrieving information from activity fields
         retrieveFieldInformation();
@@ -72,7 +83,14 @@ public class SubmissionActivity extends AppCompatActivity implements View.OnClic
      *          is performed.
      */
     public void next(View v) {
-        startActivity(new Intent(v.getContext(), SubmissionClassificationActivity.class));
+        //startActivity(new Intent(v.getContext(), SubmissionClassificationActivity.class));
+
+        Intent result = new Intent();
+        result.putExtra("DESCR", etSubDescription.getText().toString());
+        result.putExtra("LAT", lat);
+        setResult(Activity.RESULT_OK, result);
+        finish();
+
     }
 
     /**

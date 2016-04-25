@@ -1,6 +1,7 @@
 package pt.iscte.daam.pinpointhint;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -8,6 +9,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import com.google.android.gms.appindexing.Action;
@@ -15,10 +17,12 @@ import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -37,11 +41,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.Map;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
     private PinPointRestClient pins;
+    protected Marker tempMarker;
+    protected LatLng latlong;
+    public Map<Marker, Integer> hmap;
+
+    private static final int REQUEST_ADD_PINPOINT = 2;
 
     private final static String mLogTag = "pin point log";
     private GeoJsonLayer mLayer;
@@ -86,6 +96,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
+    public void heatMap(View v) {
+
+        Toast.makeText(getBaseContext(), "Show heat map!", Toast.LENGTH_LONG).show();
+    }
+
 
     private void addIcon(IconGenerator iconFactory, CharSequence text, LatLng position) {
         MarkerOptions markerOptions = new MarkerOptions().
@@ -114,6 +129,49 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
         mMap = map;
 
+
+
+        mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+            @Override
+            public void onInfoWindowClick(Marker marker) {
+                if(marker.getTitle().compareTo("New POI") == 0) {
+
+                    Intent i = new Intent(MapsActivity.this, SubmissionActivity.class);
+                    i.putExtra("LAT", latlong.latitude);
+                    i.putExtra("LONG", latlong.longitude);
+                    startActivityForResult(i, REQUEST_ADD_PINPOINT);
+                } else {
+                    Log.i("pin point", "Click POIDetailsActivity = ");
+                    //Log.i("pin point", "Click POIDetailsActivity = " + hmap.get(marker));
+                    /*Intent i = new Intent(MainActivity.this, POIDetailsActivity.class);
+                    i.putExtra("id", hmap.get(marker));
+                    startActivity(i);*/
+                }
+            }
+        });
+
+        mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
+            @Override
+            public void onMapLongClick(LatLng latLng) {
+
+                if(tempMarker != null) {
+                    tempMarker.remove();
+                }
+
+                //add a new marker to the map
+                tempMarker = mMap.addMarker(new MarkerOptions()
+                        .title("New POI")
+                        .position(latLng));
+
+                latlong = latLng;
+
+            }
+        });
+
+
+
+
+
         // Add a marker in Lisbon and move the camera
         LatLng lisbon = new LatLng(38, -9);
 
@@ -132,15 +190,33 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             pins = new PinPointRestClient(getBaseContext(), mMap);
 
             //reads data from rest api and shows simple bubbles
-            //pins.getPoints1();
+            //pins.getPins();
 
             //reads data from rest api and shows clustered bubbles
-            pins.getPoints2();
+            pins.getClusters();
 
         } catch (IOException e) {
             e.printStackTrace();
         }
 
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode == Activity.RESULT_OK) {
+            //itemCalc.setText(data.getStringExtra("RESULT"));
+
+            JSONObject JSONpin = new JSONObject();
+            try {
+                JSONpin.put("geometry", "{ 'type': 'Point', 'coordinates': ["+latlong.longitude+", "+latlong.latitude+"] }");
+                JSONpin.put("descr", data.getStringExtra("DESCR"));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            //Log.e(mLogTag, "SIM FUNCIONOU = "+ JSONpin.toString());
+            pins.addNewPinPoint(JSONpin);
+
+        }
     }
 
     private void setUpMap() {

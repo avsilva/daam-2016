@@ -13,7 +13,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
+        android:text="Help Us Improve Our World !"
         android:id="@+id/textView" />
 
     <Button
@@ -35,6 +35,7 @@
         android:id="@+id/bLogin"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
+        android:background="#8DC44A"
         android:onClick="showLogin" />
 
     <Button
@@ -45,5 +46,6 @@
         android:layout_below="@+id/bLogin"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="32dp"
+        android:background="#8DC44A"
         android:onClick="showRegistar" />
 </RelativeLayout>

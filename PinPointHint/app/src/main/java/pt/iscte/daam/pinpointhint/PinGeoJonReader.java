@@ -30,9 +30,10 @@ public class PinGeoJonReader {
         JSONArray array = new JSONArray(json);
         for (int i = 0; i < array.length(); i++) {
             JSONObject object = array.getJSONObject(i);
+            String name = object.getString("name");
             double lat = object.getDouble("lat");
             double lng = object.getDouble("lng");
-            items.add(new Pin(lat, lng));
+            items.add(new Pin(name, lat, lng));
         }
         return items;
     }
@@ -55,7 +56,7 @@ public class PinGeoJonReader {
             Double lon = (Double) coords.get(0);
             LatLng position = new LatLng(lat, lon);
             //items.add(new Pin(position, name, 1));
-            items.add(new Pin(lat, lon));
+            items.add(new Pin(name, lat, lon));
         }
         return items;
     }

@@ -11,9 +11,12 @@ public class Pin implements ClusterItem{
     /*public final String name;
     public final int profilePhoto;*/
     private final LatLng mPosition;
+    private final String mName;
 
-    public Pin(double lat, double lng) {
+    public Pin(String name, double lat, double lng) {
+
         mPosition = new LatLng(lat, lng);
+        mName = name;
     }
 
     /*public Pin(LatLng position, String name, int pictureResource) {
@@ -25,6 +28,10 @@ public class Pin implements ClusterItem{
     @Override
     public LatLng getPosition() {
         return mPosition;
+    }
+
+    public String getName() {
+        return mName;
     }
 
 }
