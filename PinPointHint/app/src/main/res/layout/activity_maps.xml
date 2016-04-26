@@ -35,7 +35,8 @@
             android:text="Pins"
             android:layout_weight="1"
             android:button="@null"
-            android:background="#8DC44A" />
+            android:background="#8DC44A"
+            android:onClick="showPins" />
 
         <View
             android:id="@+id/VerticalLine2"

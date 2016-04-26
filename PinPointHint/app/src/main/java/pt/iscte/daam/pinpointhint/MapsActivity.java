@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
@@ -17,36 +16,36 @@ import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.maps.android.geojson.GeoJsonFeature;
+import com.google.android.gms.maps.model.TileOverlay;
+import com.google.android.gms.maps.model.TileOverlayOptions;
+import com.google.maps.android.clustering.ClusterManager;
 import com.google.maps.android.geojson.GeoJsonLayer;
-import com.google.maps.android.geojson.GeoJsonPointStyle;
+import com.google.maps.android.heatmaps.HeatmapTileProvider;
 import com.google.maps.android.ui.IconGenerator;
-
-import android.location.LocationListener;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import pt.iscte.daam.pinpointhint.common.ActivityUtils;
+import pt.iscte.daam.pinpointhint.model.Pin;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
     private PinPointRestClient pins;
+    private ActivityUtils pinUtils;
     protected Marker tempMarker;
     protected LatLng latlong;
     public Map<Marker, Integer> hmap;
@@ -56,9 +55,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private final static String mLogTag = "pin point log";
     private GeoJsonLayer mLayer;
 
+    private HeatmapTileProvider mProvider;
+    private TileOverlay mOverlay;
+
+    /**
+     * Maps name of data set to data (list of LatLngs)
+     * Also maps to the URL of the data set for attribution
+     */
+    //private HashMap<String, DataSet> mLists = new HashMap<String, DataSet>();
+    private HashMap<String, ArrayList<LatLng>> mLists = new HashMap<String, ArrayList<LatLng>>();
+
+
+
     // GeoJSON file to download
     //private final String mGeoJsonUrl = "http://46.101.41.76/pinsgeojson/";
-    private final String mGeoJsonUrl = "http://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson";
+    //private final String mGeoJsonUrl = "http://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson";
 
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
@@ -96,9 +107,36 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
+    public void showPins(View v) {
+        mOverlay.clearTileCache();
+        mOverlay.setVisible(false);
+        List<Pin> nPins = pins.getItems();
+        ClusterManager<Pin> clusterMngr = pins.getClusterManager();
+        clusterMngr.addItems(nPins);
+    }
+
     public void heatMap(View v) {
 
-        Toast.makeText(getBaseContext(), "Show heat map!", Toast.LENGTH_LONG).show();
+        List<Pin> nPins = pins.getItems();
+        ClusterManager<Pin> clusterMngr = pins.getClusterManager();
+        clusterMngr.clearItems();
+        clusterMngr.getClusterMarkerCollection().clear();
+        clusterMngr.getMarkerCollection().clear();
+        //Toast.makeText(getBaseContext(), "Show heat map! "+ nPins.size(), Toast.LENGTH_LONG).show();
+
+        pinUtils = new ActivityUtils();
+        ArrayList<LatLng> list = pinUtils.readItems(nPins);
+        mLists.put("Pins", list);
+
+        // Check if need to instantiate (avoid setData etc twice)
+        if (mProvider == null) {
+            mProvider = new HeatmapTileProvider.Builder().data(mLists.get("Pins")).build();
+            mOverlay = getMap().addTileOverlay(new TileOverlayOptions().tileProvider(mProvider));
+        } else {
+            mProvider.setData(mLists.get("Pins"));
+            mOverlay.clearTileCache();
+            mOverlay.setVisible(true);
+        }
     }
 
 
@@ -128,13 +166,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             return;
         }
         mMap = map;
-
-
-
         mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
             @Override
             public void onInfoWindowClick(Marker marker) {
-                if(marker.getTitle().compareTo("New POI") == 0) {
+                if(marker.getTitle().compareTo("Inserir Pin") == 0) {
 
                     Intent i = new Intent(MapsActivity.this, SubmissionActivity.class);
                     i.putExtra("LAT", latlong.latitude);
@@ -154,23 +189,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public void onMapLongClick(LatLng latLng) {
 
-                if(tempMarker != null) {
+                if (tempMarker != null) {
                     tempMarker.remove();
                 }
 
                 //add a new marker to the map
                 tempMarker = mMap.addMarker(new MarkerOptions()
-                        .title("New POI")
+                        .title("Inserir Pin")
                         .position(latLng));
 
                 latlong = latLng;
 
             }
         });
-
-
-
-
 
         // Add a marker in Lisbon and move the camera
         LatLng lisbon = new LatLng(38, -9);
@@ -180,7 +211,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         iconFactory.setStyle(IconGenerator.STYLE_GREEN);
         iconFactory.setContentRotation(90);
         addIcon(iconFactory, "lisbon", lisbon);*/
-
 
         //mMap.addMarker(new MarkerOptions().position(lisbon).title("Marker in Portugal"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(lisbon));

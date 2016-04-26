@@ -60,15 +60,17 @@ public class PinPointRestClient
     private ClusterManager<Pin> mClusterManager;
     private Pin clickedClusterItem;
     private Cluster clickedCluster;
+    public List<Pin> items;
 
     // GeoJSON file to download
     private final String mGeoJsonUrl = "http://46.101.41.76/pinsgeojson/";
-    //private final String mGeoJsonUrl2 = "http://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson";
 
     public PinPointRestClient(final Context mcontext, GoogleMap mMap) throws IOException {
 
         myMap = mMap;
         myContext = mcontext;
+
+
         try {
             url = new URL(mGeoJsonUrl);
         } catch (MalformedURLException e) {
@@ -86,7 +88,7 @@ public class PinPointRestClient
     }
 
     public void getClusters(){
-        LoadGeoJsonPins downloadGeoJsonPins = new LoadGeoJsonPins();
+        LoadGeoJsonPins downloadGeoJsonPins = new LoadGeoJsonPins(this);
         downloadGeoJsonPins.execute(mGeoJsonUrl);
     }
 
@@ -94,6 +96,19 @@ public class PinPointRestClient
     public void addNewPinPoint(JSONObject myJsonPin){
         addPinPoint point = new addPinPoint();
         point.execute(myJsonPin);
+    }
+
+    public List<Pin> getItems(){
+        //return this.items;
+        return items;
+    }
+
+    public ClusterManager<Pin> getClusterManager(){
+        return mClusterManager;
+    }
+
+    public void onBackgroundTaskCompleted(){
+        mClusterManager.addItems(items);
     }
 
     private class addPinPoint extends AsyncTask<JSONObject, Void, String> {
@@ -202,6 +217,12 @@ public class PinPointRestClient
 
     private class LoadGeoJsonPins extends AsyncTask<String, Void, JSONObject> {
 
+        PinPointRestClient caller;
+
+        LoadGeoJsonPins(PinPointRestClient caller) {
+            this.caller = caller;
+        }
+
         @Override
         protected JSONObject doInBackground(String... params) {
             try {
@@ -287,7 +308,8 @@ public class PinPointRestClient
                 addColorsToMarkers();
                 mLayer.addLayerToMap();*/
 
-                List<Pin> items = null;
+                //List<Pin> items = null;
+                items = null;
                 try {
                     items = new PinGeoJonReader().read(jsonObject.toString());
                 } catch (JSONException e) {
@@ -322,7 +344,8 @@ public class PinPointRestClient
                     }
                 });
 
-                mClusterManager.addItems(items);
+                caller.onBackgroundTaskCompleted();
+                //mClusterManager.addItems(items);
             }
         }
     }
