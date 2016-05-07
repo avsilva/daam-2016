@@ -31,9 +31,11 @@ public class PinGeoJonReader {
         for (int i = 0; i < array.length(); i++) {
             JSONObject object = array.getJSONObject(i);
             String name = object.getString("name");
+            int id = object.getInt("id");
+            int type = object.getInt("type");
             double lat = object.getDouble("lat");
             double lng = object.getDouble("lng");
-            items.add(new Pin(name, lat, lng));
+            items.add(new Pin(id, name, type, lat, lng));
         }
         return items;
     }
@@ -45,18 +47,23 @@ public class PinGeoJonReader {
         JSONObject jobj = new JSONObject(json);
         JSONArray poi = jobj.getJSONArray("features");
         for(int i=0; i<poi.length(); i++) {
-            Log.e(mLogTag, "item "+i);
+            //Log.e(mLogTag, "item "+i);
             JSONObject t_poi = poi.getJSONObject(i);
+            int id = t_poi.getInt("id");
+            //Log.e(mLogTag, "item andre "+id);
+
             JSONObject t_poi_geometry = t_poi.getJSONObject("geometry");
             JSONObject t_poi_properties = t_poi.getJSONObject("properties");
-            String descr = t_poi_properties.getString("descr");
+            //String descr = t_poi_properties.getString("descr");
             String name = t_poi_properties.getString("name");
+
+            int type = t_poi_properties.getInt("type");
             JSONArray coords =  t_poi_geometry.getJSONArray("coordinates");
             Double lat = (Double) coords.get(1);
             Double lon = (Double) coords.get(0);
             LatLng position = new LatLng(lat, lon);
             //items.add(new Pin(position, name, 1));
-            items.add(new Pin(name, lat, lon));
+            items.add(new Pin(id, name, type, lat, lon));
         }
         return items;
     }

@@ -169,18 +169,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
             @Override
             public void onInfoWindowClick(Marker marker) {
-                if(marker.getTitle().compareTo("Inserir Pin") == 0) {
 
+                if(marker.getTitle().compareTo("Inserir Pin") == 0) {
                     Intent i = new Intent(MapsActivity.this, SubmissionActivity.class);
                     i.putExtra("LAT", latlong.latitude);
                     i.putExtra("LONG", latlong.longitude);
                     startActivityForResult(i, REQUEST_ADD_PINPOINT);
                 } else {
-                    Log.i("pin point", "Click POIDetailsActivity = ");
-                    //Log.i("pin point", "Click POIDetailsActivity = " + hmap.get(marker));
-                    /*Intent i = new Intent(MainActivity.this, POIDetailsActivity.class);
-                    i.putExtra("id", hmap.get(marker));
-                    startActivity(i);*/
+                    Intent i = new Intent(MapsActivity.this, DetailsActivity.class);
+                    i.putExtra("ID", marker.getSnippet());
+                    startActivity(i);
                 }
             }
         });
@@ -204,16 +202,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
 
         // Add a marker in Lisbon and move the camera
-        LatLng lisbon = new LatLng(38, -9);
-
-        //TODO: modify bubble style
-        /*IconGenerator iconFactory = new IconGenerator(this);
-        iconFactory.setStyle(IconGenerator.STYLE_GREEN);
-        iconFactory.setContentRotation(90);
-        addIcon(iconFactory, "lisbon", lisbon);*/
-
-        //mMap.addMarker(new MarkerOptions().position(lisbon).title("Marker in Portugal"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(lisbon));
+        /*LatLng lisbon = new LatLng(38, -9);
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(lisbon));*/
 
         //add bubble to map via rest api call
         try {
@@ -240,10 +230,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             try {
                 JSONpin.put("geometry", "{ 'type': 'Point', 'coordinates': ["+latlong.longitude+", "+latlong.latitude+"] }");
                 JSONpin.put("descr", data.getStringExtra("DESCR"));
+                JSONpin.put("type", data.getIntExtra("TYPE", 0));
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            //Log.e(mLogTag, "SIM FUNCIONOU = "+ JSONpin.toString());
             pins.addNewPinPoint(JSONpin);
 
         }

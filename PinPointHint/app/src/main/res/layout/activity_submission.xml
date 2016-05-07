@@ -78,4 +78,11 @@
         android:onClick="next"
         android:text="@string/bSubNext"
         android:textColor="@android:color/white" />
+
+    <Spinner
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/spinnerSubType"
+        android:layout_above="@+id/etSubGPS"
+        android:layout_alignParentStart="true" />
 </RelativeLayout>
