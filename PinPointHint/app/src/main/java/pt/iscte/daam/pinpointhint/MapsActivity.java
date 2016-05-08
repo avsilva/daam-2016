@@ -166,6 +166,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             return;
         }
         mMap = map;
+
         mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
             @Override
             public void onInfoWindowClick(Marker marker) {
@@ -176,6 +177,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     i.putExtra("LONG", latlong.longitude);
                     startActivityForResult(i, REQUEST_ADD_PINPOINT);
                 } else {
+                    //TODO : implement DetailsActivity
                     Intent i = new Intent(MapsActivity.this, DetailsActivity.class);
                     i.putExtra("ID", marker.getSnippet());
                     startActivity(i);
@@ -201,9 +203,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
-        // Add a marker in Lisbon and move the camera
-        /*LatLng lisbon = new LatLng(38, -9);
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(lisbon));*/
+
 
         //add bubble to map via rest api call
         try {

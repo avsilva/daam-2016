@@ -282,6 +282,10 @@ public class PinPointRestClient
 
         @Override
         protected void onPostExecute(JSONObject jsonObject) {
+
+            Double lat = null;
+            Double lon = null;
+
             if (jsonObject != null) {
 
                 Log.e(mLogTag, jsonObject.toString());
@@ -306,7 +310,21 @@ public class PinPointRestClient
 
                 setColorMap();
 
-                getMap().moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(38.72, -9.18), 10));
+                MyLocation appLocationManager = new MyLocation(myContext);
+                lat = appLocationManager.getLatitude();
+                lon = appLocationManager.getLongitude();
+                appLocationManager.getLongitude();
+
+                if (lon != null && lat != null){
+                    //TODO: add marker for user location
+                    getMap().moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lat, lon), 17));
+                } else {
+                    // Add a marker in Lisbon and move the camera
+                    LatLng lisbon = new LatLng(38.72, -9.18);
+                    getMap().moveCamera(CameraUpdateFactory.newLatLngZoom(lisbon, 12));
+                }
+
+
 
 
                 mClusterManager.setOnClusterClickListener(new ClusterManager.OnClusterClickListener<Pin>() {
