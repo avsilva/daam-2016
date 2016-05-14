@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:background="#DCEDC8"
+    tools:context="pt.iscte.daam.pinpointhint.UserDetailsActivity"
+    android:id="@+id/id_registration">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Email:"
+        android:id="@+id/textEmailDetails"
+        android:layout_below="@+id/textNomeDetails"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="43dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="email"
+        android:id="@+id/tvUserEmail"
+        android:width="200dp"
+        android:layout_alignTop="@+id/textEmailDetails"
+        android:layout_toEndOf="@+id/textEmailDetails" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Nome:"
+        android:id="@+id/textNomeDetails"
+        android:layout_marginTop="55dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="nome"
+        android:id="@+id/tvUserNome"
+        android:width="200dp"
+        android:layout_alignTop="@+id/textNomeDetails"
+        android:layout_toEndOf="@+id/textNomeDetails" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Mudar Nome:"
+        android:id="@+id/tvMudarNome"
+        android:layout_centerVertical="true"
+        android:layout_alignParentStart="true" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/etMudarNome"
+        android:width="200dp"
+        android:layout_above="@+id/tvMudarPw"
+        android:layout_toEndOf="@+id/tvMudarNome" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Mudar Password:"
+        android:id="@+id/tvMudarPw"
+        android:layout_below="@+id/tvMudarNome"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="75dp" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textPassword"
+        android:ems="10"
+        android:id="@+id/etMudarPw"
+        android:layout_alignBottom="@+id/tvMudarPw"
+        android:layout_alignEnd="@+id/etMudarNome"
+        android:layout_toEndOf="@+id/tvMudarPw" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Actualizar Perfil"
+        android:id="@+id/btActualizarPerfil"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="61dp" />
+
+
+</RelativeLayout>
+
