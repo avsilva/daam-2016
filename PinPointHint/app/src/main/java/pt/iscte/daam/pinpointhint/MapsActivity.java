@@ -86,12 +86,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
 
-        //TODO: get current location
-        /*MyLocation appLocationManager = new MyLocation(getBaseContext());
-        String latitude = appLocationManager.getLatitude();
-        appLocationManager.getLongitude();
-        Toast.makeText(getBaseContext(), "Latitude: "+latitude, Toast.LENGTH_LONG).show();*/
-
         if (isConnected()) {
             Toast.makeText(getBaseContext(), "Connection ready!", Toast.LENGTH_LONG).show();
         } else {
@@ -177,9 +171,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     i.putExtra("LONG", latlong.longitude);
                     startActivityForResult(i, REQUEST_ADD_PINPOINT);
                 } else {
-                    //TODO : implement DetailsActivity
                     Intent i = new Intent(MapsActivity.this, DetailsActivity.class);
-                    i.putExtra("ID", marker.getSnippet());
+                    String pinID = marker.getSnippet();
+                    String descr = marker.getTitle();
+                    i.putExtra("ID", pinID);
+                    i.putExtra("DESCR", descr);
                     startActivity(i);
                 }
             }

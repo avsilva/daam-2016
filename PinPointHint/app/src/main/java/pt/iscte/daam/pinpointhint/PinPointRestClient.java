@@ -43,6 +43,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import pt.iscte.daam.pinpointhint.common.ActivityUtils;
 import pt.iscte.daam.pinpointhint.model.Pin;
 
 
@@ -66,6 +67,8 @@ public class PinPointRestClient
     public List<Pin> items;
 
     protected Marker m;
+
+    private ActivityUtils pinUtils;
 
     // GeoJSON file to download
     private final String mGeoJsonUrl = "http://46.101.41.76/pinsgeojson/";
@@ -134,7 +137,6 @@ public class PinPointRestClient
                 try {
                     builder = new Uri.Builder()
                             .appendQueryParameter("descr", params[0].getString("descr"))
-                            .appendQueryParameter("name", params[0].getString("descr"))
                             .appendQueryParameter("type", params[0].getString("type"))
                             .appendQueryParameter("geom", params[0].getString("geometry"));
                 } catch (JSONException e) {
@@ -160,16 +162,15 @@ public class PinPointRestClient
                     while ((line=br.readLine()) != null) {
                         json+=line;
                     }
-                    Log.e(mLogTag, "SIM FUNCIONOU = "+ line);
                 }
                 else {
                     json="";
-                    Log.e(mLogTag, "NAO FUNCIONOU = "+ responseCode);
-
                 }
 
                 InputStream in = new BufferedInputStream(urlConnection.getInputStream());
-                json = convertInputStreamToString(in);
+                //json = convertInputStreamToString(in);
+                pinUtils = new ActivityUtils();
+                json = pinUtils.convertInputStreamToString(in);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -198,10 +199,10 @@ public class PinPointRestClient
         public View getInfoContents(Marker marker) {
 
             String title = "";
-            Integer typestr = null;
+            String type_name = "";
             if (clickedClusterItem != null) {
-                title = clickedClusterItem.getName();
-                typestr = clickedClusterItem.getType();
+                title = clickedClusterItem.getDescr();
+                type_name = clickedClusterItem.getTypeName();
                 /*for (Pin item : clickedClusterItem.getItems()) {
                     // Extract data from each item in the cluster as needed
                 }*/
@@ -214,9 +215,8 @@ public class PinPointRestClient
             TextView note = (TextView) v.findViewById(R.id.note);
             TextView type = (TextView) v.findViewById(R.id.type);
 
-            //note.setText(marker.getTitle() );
-            note.setText(title);
-            type.setText(typestr.toString());
+            note.setText("Descrição: " + title);
+            type.setText("Tipologia: " + type_name);
 
             // Returning the view containing InfoWindow contents
             return v;
@@ -316,8 +316,16 @@ public class PinPointRestClient
                 appLocationManager.getLongitude();
 
                 if (lon != null && lat != null){
-                    //TODO: add marker for user location
-                    getMap().moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lat, lon), 17));
+
+                    //center map
+                    getMap().moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lat, lon), 16));
+
+                    //show pin
+                    MarkerOptions markerOptions = new MarkerOptions();
+                    markerOptions.position(new LatLng(lat, lon));
+                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.blue_pin));
+                    getMap().addMarker(markerOptions);
+
                 } else {
                     // Add a marker in Lisbon and move the camera
                     LatLng lisbon = new LatLng(38.72, -9.18);
@@ -376,14 +384,11 @@ public class PinPointRestClient
 
         @Override
         protected void onBeforeClusterItemRendered(Pin item, MarkerOptions markerOptions) {
-            // Draw a single person.
+            // Draw a single pin.
             // Set the info window to show their name.
-            //Log.e(mLogTag, "pin = " + item.getName() + item.getType());
-            markerOptions.title(item.getName());
+            markerOptions.title(item.getDescr());
             markerOptions.snippet(String.valueOf(item.getIdent()));
             markerOptions.icon(BitmapDescriptorFactory.defaultMarker(hcolor.get(item.getType())));
-
-
 
             /*hmap = new HashMap<Pin, Integer>();
             hmap.put(item, item.getIdent());*/
@@ -394,8 +399,6 @@ public class PinPointRestClient
         }
 
     }
-
-
 
 
     private class getPinPoints extends AsyncTask<String, Void, String>  {
@@ -409,7 +412,9 @@ public class PinPointRestClient
             try {
                 urlConnection = (HttpURLConnection) url.openConnection();
                 InputStream in = new BufferedInputStream(urlConnection.getInputStream());
-                json = convertInputStreamToString(in);
+                //json = convertInputStreamToString(in);
+                pinUtils = new ActivityUtils();
+                json = pinUtils.convertInputStreamToString(in);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -430,14 +435,14 @@ public class PinPointRestClient
                     JSONObject t_poi_geometry = t_poi.getJSONObject("geometry");
                     JSONObject t_poi_properties = t_poi.getJSONObject("properties");
                     String descr = t_poi_properties.getString("descr");
-                    String name = t_poi_properties.getString("name");
+                    //String name = t_poi_properties.getString("name");
 
                     JSONArray coords =  t_poi_geometry.getJSONArray("coordinates");
                     Double lat = (Double) coords.get(1);
                     Double lon = (Double) coords.get(0);
                     Marker m = myMap.addMarker(new MarkerOptions()
                             .title(descr)
-                            .snippet(name)
+                            .snippet(descr)
                             .position(new LatLng(lat, lon)));
 
                     //hmap.put(m, t_poi.getInt("id"));
@@ -450,7 +455,7 @@ public class PinPointRestClient
         }
     }
 
-    private static String convertInputStreamToString(InputStream inputStream) throws IOException{
+    /*private static String convertInputStreamToString(InputStream inputStream) throws IOException{
         BufferedReader bufferedReader = new BufferedReader( new InputStreamReader(inputStream));
         String line = "";
         String result = "";
@@ -459,7 +464,6 @@ public class PinPointRestClient
 
         inputStream.close();
         return result;
-
-    }
+    }*/
 
 }

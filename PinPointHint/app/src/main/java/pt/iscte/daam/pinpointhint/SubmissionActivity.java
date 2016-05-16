@@ -54,13 +54,13 @@ public class SubmissionActivity extends AppCompatActivity implements View.OnClic
             etSubDescription.setText(ActivityUtils.EMPTY_STRING);
         }
 
-        if (v.getId() == R.id.etSubEmail) {
+        /*if (v.getId() == R.id.etSubEmail) {
             etSubEmail.setText(ActivityUtils.EMPTY_STRING);
         }
 
         if (v.getId() == R.id.etSubGPS) {
             etSubGPS.setText(ActivityUtils.EMPTY_STRING);
-        }
+        }*/
     }
 
     /**
@@ -89,6 +89,7 @@ public class SubmissionActivity extends AppCompatActivity implements View.OnClic
         //startActivity(new Intent(v.getContext(), SubmissionClassificationActivity.class));
 
         Intent result = new Intent();
+
         result.putExtra("DESCR", etSubDescription.getText().toString());
 
         PinType type = (PinType)spinnerSubType.getSelectedItem();
@@ -105,8 +106,8 @@ public class SubmissionActivity extends AppCompatActivity implements View.OnClic
      */
     private void addListeners() {
         etSubDescription.setOnClickListener(this);
-        etSubEmail.setOnClickListener(this);
-        etSubGPS.setOnClickListener(this);
+        //etSubEmail.setOnClickListener(this);
+        //etSubGPS.setOnClickListener(this);
     }
 
     /**
@@ -115,8 +116,8 @@ public class SubmissionActivity extends AppCompatActivity implements View.OnClic
      */
     private void retrieveFieldInformation() {
         etSubDescription = (EditText) findViewById(R.id.etSubDescription);
-        etSubEmail = (EditText) findViewById(R.id.etSubEmail);
-        etSubGPS = (EditText) findViewById(R.id.etSubGPS);
+        //etSubEmail = (EditText) findViewById(R.id.etSubEmail);
+        //etSubGPS = (EditText) findViewById(R.id.etSubGPS);
         spinnerSubType = (Spinner)this.findViewById(R.id.spinnerSubType);
         setSpinnerAdapter();
 

@@ -11,14 +11,16 @@ public class Pin implements ClusterItem{
     /*public final String name;
     public final int profilePhoto;*/
     private final LatLng mPosition;
-    private final String mName;
+    private final String mDescr;
+    private final String mTypeName;
     private final int mType;
     private final int mIdent;
 
-    public Pin(int id, String name, int type, double lat, double lng) {
+    public Pin(int id, String descr, int type, String type_name,  double lat, double lng) {
 
         mPosition = new LatLng(lat, lng);
-        mName = name;
+        mDescr = descr;
+        mTypeName = type_name;
         mType = type;
         mIdent = id;
     }
@@ -34,16 +36,23 @@ public class Pin implements ClusterItem{
         return mPosition;
     }
 
-    public String getName() {
-        return mName;
+    public String getDescr() {
+        return mDescr;
+    }
+
+    public String getTypeName() {
+        return mTypeName;
     }
 
     public int getType() {
         return mType;
     }
 
-    public int getIdent() {
-        return mIdent;
+    public int getIdent() { return mIdent; }
+
+    public Pin getPinByID(int id) {
+
+        return this;
     }
 
 }

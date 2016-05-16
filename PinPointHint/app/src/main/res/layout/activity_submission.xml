@@ -15,44 +15,24 @@
         android:id="@+id/etSubDescription"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
         android:ems="10"
         android:inputType="textMultiLine"
-        android:text="@string/etSubDescription" />
-
-    <EditText
-        android:id="@+id/etSubEmail"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
+        android:text="@string/etSubDescription"
         android:layout_alignParentStart="true"
-        android:layout_centerVertical="true"
-        android:ems="10"
-        android:inputType="textEmailAddress"
-        android:text="@string/etSubEmail" />
+        android:layout_below="@+id/spinnerSubType"
+        android:layout_alignEnd="@+id/spinnerSubType" />
 
     <Button
         android:id="@+id/btSubPhoto"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/etSubEmail"
-        android:layout_marginTop="28dp"
+        android:layout_marginTop="42dp"
         android:background="#8DC44A"
         android:text="@string/bSubPhoto"
         android:onClick="photo"
-        android:textColor="@android:color/white" />
-
-    <EditText
-        android:id="@+id/etSubGPS"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/etSubEmail"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentStart="true"
-        android:text="@string/etSubGPS" />
+        android:textColor="@android:color/white"
+        android:layout_below="@+id/etSubDescription"
+        android:layout_alignParentStart="true" />
 
     <!-- The image should be invisible while the image was not loaded.
         After, the android icon will appear indicating that image was loaded
@@ -64,8 +44,8 @@
         android:layout_height="wrap_content"
         android:src="@mipmap/ic_launcher"
         android:visibility="visible"
-        android:layout_alignTop="@+id/btSubPhoto"
-        android:layout_alignEnd="@+id/etSubEmail" />
+        android:layout_below="@+id/btSubPhoto"
+        android:layout_alignParentStart="true" />
 
     <Button
         android:id="@+id/btSubNext"
@@ -83,6 +63,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/spinnerSubType"
-        android:layout_above="@+id/etSubGPS"
+        android:layout_alignParentTop="true"
         android:layout_alignParentStart="true" />
+
 </RelativeLayout>
