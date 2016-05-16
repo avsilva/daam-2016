@@ -2,6 +2,7 @@ package pt.iscte.daam.pinpointhint;
 
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -37,8 +38,14 @@ public class LoginActivity extends AppCompatActivity {
                         try {
                             JSONObject jsonResponse = new JSONObject(response);
                             boolean success = jsonResponse.getBoolean("success");
+                            String nome = jsonResponse.getString("nome");
                             if (success) {
-
+                                SharedPreferences sharedPreferences = getSharedPreferences("user_data",MODE_PRIVATE);
+                                SharedPreferences.Editor editor = sharedPreferences.edit();
+                                editor.putString("username", email);
+                                editor.putString("password", password);
+                                editor.putString("nome", nome);
+                                editor.commit();
                                 Intent intent = new Intent(LoginActivity.this, MapsActivity.class);
                                 LoginActivity.this.startActivity(intent);
                             } else {
@@ -59,7 +66,9 @@ public class LoginActivity extends AppCompatActivity {
 
             });
         }
-    }
+
+
+}
 
 
 

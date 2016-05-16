@@ -1,6 +1,7 @@
 package pt.iscte.daam.pinpointhint;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -9,8 +10,13 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.RadioButton;
 import android.widget.Toast;
 
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.toolbox.Volley;
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -58,6 +64,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private HeatmapTileProvider mProvider;
     private TileOverlay mOverlay;
 
+
+
+
+
     /**
      * Maps name of data set to data (list of LatLngs)
      * Also maps to the URL of the data set for attribution
@@ -85,6 +95,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+
+
+        Button bUserDetails = (Button) findViewById(R.id.bUserDetails);
+        bUserDetails.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View v){
+                Intent intent = new Intent(MapsActivity.this, UserDetailsActivity.class);
+                MapsActivity.this.startActivity(intent);
+            }
+
+        });
+
 
         if (isConnected()) {
             Toast.makeText(getBaseContext(), "Connection ready!", Toast.LENGTH_LONG).show();
