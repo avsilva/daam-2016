@@ -3,8 +3,8 @@ package pt.iscte.daam.pinpointhint;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -16,16 +16,29 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class LoginActivity extends AppCompatActivity {
+import pt.iscte.daam.pinpointhint.common.ActivityUtils;
+
+public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
+
+    private EditText etLoginEmail;
+    private EditText etLoginPassword;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        final EditText etLoginEmail = (EditText) findViewById(R.id.etLoginEmail);
-        final EditText etLoginPassword = (EditText) findViewById(R.id.etLoginPassword);
+        //final EditText etLoginEmail = (EditText) findViewById(R.id.etLoginEmail);
+        //final EditText etLoginPassword = (EditText) findViewById(R.id.etLoginPassword);
         final Button bLoginSubmit = (Button) findViewById(R.id.bLoginSubmit);
+
+        //Retrieving information from activity fields
+        retrieveFieldInformation();
+
+        //Adding onClick listeners
+        addListeners();
+
+
 
         bLoginSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -67,7 +80,34 @@ public class LoginActivity extends AppCompatActivity {
             });
         }
 
+        /**
+         * This method is used to setup listeners on the components of this activity.
+         */
+        private void addListeners() {
+            etLoginEmail.setOnClickListener(this);
+            etLoginPassword.setOnClickListener(this);
+        }
 
+        /**
+         * Thist method is used to retrieved the data associated to each edit text defined
+         * in this activity, in order to setup the instance attributes of this activity.
+         */
+        private void retrieveFieldInformation() {
+            etLoginEmail = (EditText) findViewById(R.id.etLoginEmail);
+            etLoginPassword = (EditText) findViewById(R.id.etLoginPassword);
+        }
+
+
+    @Override
+    public void onClick(View v) {
+        if (v.getId() == R.id.etLoginEmail) {
+            etLoginEmail.setText(ActivityUtils.EMPTY_STRING);
+        }
+
+        if (v.getId() == R.id.etLoginPassword) {
+            etLoginPassword.setText(ActivityUtils.EMPTY_STRING);
+        }
+    }
 }
 
 

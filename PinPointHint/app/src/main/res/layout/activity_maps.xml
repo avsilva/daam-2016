@@ -49,37 +49,23 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:gravity="center_horizontal|center_vertical"
-            android:text="List"
+            android:text="Lista"
             android:layout_weight="1"
             android:button="@null"
             android:background="#8DC44A" />
-        <View
-            android:id="@+id/VerticalLine3"
-            android:layout_width="1dip"
-            android:layout_height="match_parent"
-            android:background="#aaa" />
 
-        <RadioButton
-            android:id="@+id/radioNearBy"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:gravity="center_horizontal|center_vertical"
-            android:text="Options"
-            android:layout_weight="1"
-            android:button="@null"
-            android:background="#8DC44A" />
         <View
             android:id="@+id/VerticalLine4"
             android:layout_width="1dip"
             android:layout_height="match_parent"
             android:background="#aaa" />
 
-        <Button
+        <RadioButton
             android:id="@+id/bUserDetails"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:gravity="center_horizontal|center_vertical"
-            android:text="User Details"
+            android:text="Definições"
             android:layout_weight="1"
             android:button="@null"
             android:background="#8DC44A" />

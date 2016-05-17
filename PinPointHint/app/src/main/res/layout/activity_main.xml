@@ -23,6 +23,7 @@
         android:id="@+id/bMapShow"
         android:background="#8DC44A"
         android:onClick="showMap"
+        android:visibility="invisible"
         android:nestedScrollingEnabled="true"
         android:layout_below="@+id/bRegistar"
         android:layout_centerHorizontal="true"
