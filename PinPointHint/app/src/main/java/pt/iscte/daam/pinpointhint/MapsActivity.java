@@ -3,6 +3,7 @@ package pt.iscte.daam.pinpointhint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -55,7 +56,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     protected Marker tempMarker;
     protected LatLng latlong;
     public Map<Marker, Integer> hmap;
-
+    RadioButton bUserDetails;
     private static final int REQUEST_ADD_PINPOINT = 2;
 
     private final static String mLogTag = "pin point log";
@@ -96,6 +97,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
 
+        SharedPreferences sharedPreferences = getSharedPreferences("user_data", MODE_PRIVATE);
+
+        bUserDetails = (RadioButton) findViewById(R.id.bUserDetails);
+        bUserDetails.setText(sharedPreferences.getString("nome", ""));
 
         Button bUserDetails = (Button) findViewById(R.id.bUserDetails);
         bUserDetails.setOnClickListener(new View.OnClickListener(){

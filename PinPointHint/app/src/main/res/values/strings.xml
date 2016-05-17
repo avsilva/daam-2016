@@ -6,6 +6,8 @@
     <string name="etRegName">Nome</string>
     <string name="etRegEmail">Correio Electrónico</string>
     <string name="etRegPhone">Contacto Telefónico</string>
+
+
     <string name="etLoginEmail">Email</string>
     <string name="etLoginPassword">Password</string>
     <string name="tvRegPassword">Palavra-Passe</string>
