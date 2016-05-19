@@ -37,6 +37,7 @@ public class UserDetailsActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_details);
+
         Button btActualizarPerfil = (Button) findViewById(R.id.btActualizarPerfil);
         emailLayout = (TextView) findViewById(R.id.tvUserEmail);
         nomeLayout = (TextView) findViewById(R.id.tvUserNome);
@@ -52,6 +53,9 @@ public class UserDetailsActivity extends AppCompatActivity {
         emailLayout.setText(email);
         nomeLayout.setText(nome);
 
+        String s = "Perfil de " + nome;
+
+        getSupportActionBar().setTitle(s);
 
         btActualizarPerfil.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -60,8 +64,8 @@ public class UserDetailsActivity extends AppCompatActivity {
                 final String password = etMudarPw.getText().toString();
 
                 if(!isValidNome(nome)&&!isValidPassword(password)) {
-                    etMudarNome.setError("Insira um nome possível");
-                    etMudarPw.setError("Insira uma pw com 7 caracteres pelo menos");
+                    etMudarNome.setError("Insira um nome com 3 letras pelo menos");
+                    etMudarPw.setError("Insira uma pw com 8 caracteres pelo menos");
                     etMudarNome.requestFocus();
                     etMudarPw.requestFocus();
                 }

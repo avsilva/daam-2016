@@ -3,6 +3,7 @@
 
     <!-- Strings used within the registration activity -->
     <string name="registration_activity_title">Registo</string>
+    <string name="login_activity_title">Login</string>
     <string name="etRegName">Nome</string>
     <string name="etRegEmail">Correio Electrónico</string>
     <string name="etRegPhone">Contacto Telefónico</string>
@@ -12,7 +13,7 @@
     <string name="etLoginPassword">Password</string>
     <string name="tvRegPassword">Palavra-Passe</string>
     <string name="tvRegPasswordConfirm">Confirmação da Palavra-Passe</string>
-    <string name="bRegSubmit">SUBMETER</string>
+    <string name="bRegSubmit">REGISTAR</string>
     <string name="regSubmitMessageOk">Dados submetidos com sucesso</string>
 
     <!-- Strings used within the submission activity -->

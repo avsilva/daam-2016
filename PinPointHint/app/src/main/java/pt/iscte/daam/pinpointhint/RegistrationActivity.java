@@ -28,7 +28,7 @@ import pt.iscte.daam.pinpointhint.common.ActivityUtils;
 public class RegistrationActivity extends AppCompatActivity implements View.OnClickListener {
     private EditText etRegName;
     private EditText etRegEmail;
-    private EditText etRegPhone;
+    //private EditText etRegPhone;
     private EditText etRegPassword;
     private EditText etRegPasswordConfirm;
     private Button bRegSubmit;
@@ -55,9 +55,9 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
             etRegEmail.setText(ActivityUtils.EMPTY_STRING);
         }
 
-        if (v.getId() == R.id.etRegPhone) {
-            etRegPhone.setText(ActivityUtils.EMPTY_STRING);
-        }
+//        if (v.getId() == R.id.etRegPhone) {
+//            etRegPhone.setText(ActivityUtils.EMPTY_STRING);
+//        }
 
         if (v.getId() == R.id.etRegPassword) {
             etRegPassword.setText(ActivityUtils.EMPTY_STRING);
@@ -85,7 +85,7 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
     private void addListeners() {
         etRegName.setOnClickListener(this);
         etRegEmail.setOnClickListener(this);
-        etRegPhone.setOnClickListener(this);
+        //etRegPhone.setOnClickListener(this);
         etRegPassword.setOnClickListener(this);
         etRegPasswordConfirm.setOnClickListener(this);
         bRegSubmit.setOnClickListener(new View.OnClickListener() {
@@ -157,7 +157,7 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
     private void retrieveFieldInformation() {
         etRegName = (EditText) findViewById(R.id.etRegName);
         etRegEmail = (EditText) findViewById(R.id.etRegEmail);
-        etRegPhone = (EditText) findViewById(R.id.etRegPhone);
+        //etRegPhone = (EditText) findViewById(R.id.etRegPhone);
         etRegPassword = (EditText) findViewById(R.id.etRegPassword);
         etRegPasswordConfirm = (EditText) findViewById(R.id.etRegPasswordConfirm);
         bRegSubmit = (Button) findViewById(R.id.bRegSubmit);
@@ -173,13 +173,13 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
         return matcher.matches();
     }
     private boolean isValidPassword(String password){
-        if (password != null && password.length() > 6) {
+        if (password != null && password.length() > 7) {
             return true;
         }
         return false;
     }
     private boolean isValidNome(String nome){
-        if(nome.length()>4 && !nome.matches(".*\\d.*")){
+        if(nome.length()>=3 && !nome.matches(".*\\d.*")){
             return true;
         }
         return false;
