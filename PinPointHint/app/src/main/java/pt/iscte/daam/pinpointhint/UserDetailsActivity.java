@@ -54,8 +54,11 @@ public class UserDetailsActivity extends AppCompatActivity {
         nomeLayout.setText(nome);
 
         String s = "Perfil de " + nome;
+        if(getSupportActionBar()!=null) {
+            getSupportActionBar().setTitle(s);
+        }
 
-        getSupportActionBar().setTitle(s);
+        assert btActualizarPerfil != null;
 
         btActualizarPerfil.setOnClickListener(new View.OnClickListener() {
             @Override
