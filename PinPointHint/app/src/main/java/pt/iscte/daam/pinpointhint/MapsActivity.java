@@ -118,6 +118,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
+    @Override
+    protected void onRestart(){
+        super.onRestart();
+        Intent intent = getIntent();
+        finish();
+        startActivity(intent);
+    }
+
     public void showList(View v) {
         Intent i = new Intent(MapsActivity.this, ListActivity.class);
 
