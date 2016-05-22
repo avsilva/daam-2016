@@ -3,6 +3,9 @@ package pt.iscte.daam.pinpointhint.model;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.maps.android.clustering.ClusterItem;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by andre.silva on 16/04/2016.
  */
@@ -15,6 +18,7 @@ public class Pin implements ClusterItem{
     private final String mTypeName;
     private final int mType;
     private final int mIdent;
+
 
     public Pin(int id, String descr, int type, String type_name,  double lat, double lng) {
 
@@ -49,6 +53,7 @@ public class Pin implements ClusterItem{
     }
 
     public int getIdent() { return mIdent; }
+
 
     public Pin getPinByID(int id) {
 

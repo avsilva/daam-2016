@@ -55,18 +55,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private ActivityUtils pinUtils;
     protected Marker tempMarker;
     protected LatLng latlong;
-    public Map<Marker, Integer> hmap;
     RadioButton bUserDetails;
     private static final int REQUEST_ADD_PINPOINT = 2;
-
     private final static String mLogTag = "pin point log";
-    private GeoJsonLayer mLayer;
+
+    //public Map<Marker, Integer> hmap;
+    //private GeoJsonLayer mLayer;
 
     private HeatmapTileProvider mProvider;
     private TileOverlay mOverlay;
-
-
-
 
 
     /**
@@ -75,12 +72,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      */
     //private HashMap<String, DataSet> mLists = new HashMap<String, DataSet>();
     private HashMap<String, ArrayList<LatLng>> mLists = new HashMap<String, ArrayList<LatLng>>();
-
-
-
-    // GeoJSON file to download
-    //private final String mGeoJsonUrl = "http://46.101.41.76/pinsgeojson/";
-    //private final String mGeoJsonUrl = "http://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson";
 
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
@@ -125,6 +116,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
+    }
+
+    public void showList(View v) {
+        Intent i = new Intent(MapsActivity.this, ListActivity.class);
+
+        JSONObject jsonPins = pins.getJSONPins();
+        i.putExtra("PINS", jsonPins.toString());
+
+        startActivity(i);
+        //http://stackoverflow.com/questions/2736389/how-to-pass-an-object-from-one-activity-to-another-on-android
     }
 
     public void showPins(View v) {
@@ -227,14 +228,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
 
-        //add bubble to map via rest api call
+        //add pins to map via rest api call
         try {
             pins = new PinPointRestClient(getBaseContext(), mMap);
 
             //reads data from rest api and shows simple bubbles
             //pins.getPins();
 
-            //reads data from rest api and shows clustered bubbles
+            //reads data from rest api and shows clustered pins
             pins.getClusters();
 
         } catch (IOException e) {

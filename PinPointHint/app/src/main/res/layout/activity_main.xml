@@ -80,7 +80,9 @@
                 android:shape="ring"
                 android:textColor="#000000"
                 android:layout_weight="0.19"
-                android:onClick="showLogin" />
+                android:onClick="showMap" />
+                <!--android:onClick="showLogin" />-->
+
 
             <TextView
                 android:layout_width="106dp"

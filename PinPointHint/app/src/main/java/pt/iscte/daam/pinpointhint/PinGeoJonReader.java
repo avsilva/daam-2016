@@ -1,18 +1,13 @@
 package pt.iscte.daam.pinpointhint;
 
-import android.util.Log;
-
-import com.google.android.gms.maps.model.LatLng;
+import android.util.ArrayMap;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Scanner;
 
 import pt.iscte.daam.pinpointhint.model.Pin;
 
@@ -22,11 +17,23 @@ import pt.iscte.daam.pinpointhint.model.Pin;
 public class PinGeoJonReader {
 
     private static final String REGEX_INPUT_BOUNDARY_BEGINNING = "\\A";
-    private final static String mLogTag = "andre";
+    private final static String mLogTag = "pin point log";
+
+    List<Pin> items = new ArrayList<Pin>();
+
+    private static List<Pin> instances = new ArrayList<Pin>();
+
+    public static List getPinInstances()  {
+        return instances;
+    }
+
+
+    private static void addPinToList(Pin pin) {
+        instances.add(pin);
+    }
 
     public List<Pin> read(String json) throws JSONException {
-        List<Pin> items = new ArrayList<Pin>();
-        //String json = new Scanner(inputStream).useDelimiter(REGEX_INPUT_BOUNDARY_BEGINNING).next();
+
 
         JSONObject jobj = new JSONObject(json);
         JSONArray poi = jobj.getJSONArray("features");
@@ -42,7 +49,9 @@ public class PinGeoJonReader {
             JSONArray coords =  t_poi_geometry.getJSONArray("coordinates");
             Double lat = (Double) coords.get(1);
             Double lon = (Double) coords.get(0);
-            items.add(new Pin(id, descr, type, type_name, lat, lon));
+            Pin pin = new Pin(id, descr, type, type_name, lat, lon);
+            addPinToList(pin);
+            items.add(pin);
         }
         return items;
     }

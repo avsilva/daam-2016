@@ -64,9 +64,10 @@ public class PinPointRestClient
     private ClusterManager<Pin> mClusterManager;
     private Pin clickedClusterItem;
     private Cluster clickedCluster;
-    public List<Pin> items;
+    private List<Pin> items;
+    private JSONObject jsonPins;
 
-    protected Marker m;
+    //protected Marker m;
 
     private ActivityUtils pinUtils;
 
@@ -77,7 +78,6 @@ public class PinPointRestClient
 
         myMap = mMap;
         myContext = mcontext;
-
 
         try {
             url = new URL(mGeoJsonUrl);
@@ -107,9 +107,15 @@ public class PinPointRestClient
     }
 
     public List<Pin> getItems(){
-        //return this.items;
         return items;
     }
+
+
+    public JSONObject getJSONPins(){
+        return jsonPins;
+    }
+
+
 
     public ClusterManager<Pin> getClusterManager(){
         return mClusterManager;
@@ -288,7 +294,8 @@ public class PinPointRestClient
 
             if (jsonObject != null) {
 
-                Log.e(mLogTag, jsonObject.toString());
+                //Log.e(mLogTag, jsonObject.toString());
+                jsonPins = jsonObject;
                 mLayer = new GeoJsonLayer(myMap, jsonObject);
 
                 items = null;

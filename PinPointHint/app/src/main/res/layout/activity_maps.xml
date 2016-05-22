@@ -55,7 +55,8 @@
             android:layout_weight="1"
             android:button="@null"
             android:background="#19307c"
-            android:textColor="#ffffff"/>
+            android:textColor="#ffffff"
+            android:onClick="showList"/>
 
         <View
             android:id="@+id/VerticalLine4"
