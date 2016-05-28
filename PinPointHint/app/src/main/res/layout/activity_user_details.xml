@@ -19,14 +19,13 @@
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_weight="3">
+            android:layout_height="wrap_content">
 
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="40dp">
+                android:layout_marginTop="10dp">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -54,7 +53,7 @@
                 android:orientation="horizontal"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp">
+                android:layout_marginTop="10dp">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -77,13 +76,54 @@
                     android:layout_weight="2"
                     android:textColor="#000000" />
             </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Nº de pins submetidos:"
+                    android:id="@+id/textNumPins"
+                    android:textColor="#19307c" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="numpins"
+                    android:id="@+id/tvNumPins"
+                    android:textColor="#000000" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="10dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Raio:"
+                    android:id="@+id/textRaio"
+                    android:textColor="#19307c" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="raio"
+                    android:id="@+id/tvRaio"
+                    android:textColor="#000000" />
+            </LinearLayout>
         </LinearLayout>
 
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_weight="3"
+            android:layout_height="wrap_content"
             android:layout_marginTop="20dp">
 
             <TextView
@@ -122,21 +162,35 @@
                 android:layout_alignBottom="@+id/tvMudarPw"
                 android:layout_alignEnd="@+id/etMudarNome"
                 android:layout_toEndOf="@+id/tvMudarPw" />
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="Mudar Raio (Metros):"
+                android:id="@+id/tvMudarRaio"
+                android:textColor="#19307c"
+                android:layout_marginTop="20dp" />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/etMudarRaio"
+                android:text="0" />
+
         </LinearLayout>
 
         <LinearLayout
             android:orientation="vertical"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp">
 
             <Button
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="fill_parent"
                 android:text="Actualizar Perfil"
                 android:id="@+id/btActualizarPerfil"
                 android:layout_alignParentBottom="true"
-                android:layout_marginBottom="61dp"
                 android:background="#19307c"
                 android:textColor="#ffffff"
                 android:layout_alignParentEnd="true"

@@ -1,7 +1,9 @@
 package pt.iscte.daam.pinpointhint;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -11,6 +13,13 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
+
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import pt.iscte.daam.pinpointhint.common.ActivityUtils;
 import pt.iscte.daam.pinpointhint.model.PinType;
@@ -47,6 +56,7 @@ public class SubmissionActivity extends AppCompatActivity implements View.OnClic
         //Adding onClick listeners
         addListeners();
     }
+
 
     @Override
     public void onClick(View v) {
@@ -97,6 +107,37 @@ public class SubmissionActivity extends AppCompatActivity implements View.OnClic
 
         result.putExtra("LAT", lat);
         setResult(Activity.RESULT_OK, result);
+
+        SharedPreferences sharedPreferences = getSharedPreferences("user_data", MODE_PRIVATE);
+        String email = sharedPreferences.getString("username", "");
+        //final int n_pins = sharedPreferences.getInt("n_pins", 0);
+        //final int nPinsIncrement = n_pins+1;
+        Response.Listener<String> responseListener = new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                try {
+                    JSONObject jsonResponse = new JSONObject(response);
+                    boolean success = jsonResponse.getBoolean("success");
+                    if(success){
+                        SharedPreferences sharedPreferences = getSharedPreferences("user_data",MODE_PRIVATE);
+                        int n_pins = sharedPreferences.getInt("n_pins",0);
+                        sharedPreferences.edit().putInt("n_pins", (n_pins + 1)).commit();
+                    }
+                    if(!success){
+                        AlertDialog.Builder builder = new AlertDialog.Builder(SubmissionActivity.this);
+                        builder.setMessage("Falhou a inserção do pin").setNegativeButton("Retry",null).create().show();
+                    }
+                        //String password = sharedPreferences.getString("password","");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+
+        IncrementPinRequest incrementRequest = new IncrementPinRequest(email, responseListener);
+        RequestQueue queue = Volley.newRequestQueue(SubmissionActivity.this);
+        queue.add(incrementRequest);
+
         finish();
 
     }
