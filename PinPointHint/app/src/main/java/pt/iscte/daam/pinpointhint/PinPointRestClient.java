@@ -1,6 +1,7 @@
 package pt.iscte.daam.pinpointhint;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -12,7 +13,6 @@ import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -20,9 +20,9 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
 import com.google.maps.android.clustering.view.DefaultClusterRenderer;
-import com.google.maps.android.geojson.GeoJsonFeature;
 import com.google.maps.android.geojson.GeoJsonLayer;
-import com.google.maps.android.geojson.GeoJsonPointStyle;
+import com.google.maps.android.ui.BubbleIconFactory;
+import com.google.maps.android.ui.IconGenerator;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -53,7 +53,6 @@ import pt.iscte.daam.pinpointhint.model.Pin;
 public class PinPointRestClient
 {
 
-    private URL url;
     public Map<Pin, Integer> hmap;
     private HashMap<Integer, Float> hcolor;
     private GoogleMap myMap;
@@ -67,7 +66,9 @@ public class PinPointRestClient
     private List<Pin> items;
     private JSONObject jsonPins;
 
-    //protected Marker m;
+    private LatLng myLatLng = null;
+    private int mySearchRadius = 500;
+    private String mGeoJsonFilterUrl = "";
 
     private ActivityUtils pinUtils;
 
@@ -78,16 +79,39 @@ public class PinPointRestClient
 
         myMap = mMap;
         myContext = mcontext;
+        myLatLng = getMyLocation();
+        mySearchRadius = getSearchRadius(mcontext);
 
-        try {
+        String queryString = "?dist="+mySearchRadius+"&point="+myLatLng.longitude+","+myLatLng.latitude;
+        mGeoJsonFilterUrl = mGeoJsonUrl+queryString;
+
+        /*try {
             url = new URL(mGeoJsonUrl);
         } catch (MalformedURLException e) {
             e.printStackTrace();
-        }
+        }*/
+
+
     }
 
     protected GoogleMap getMap() {
         return myMap;
+    }
+
+    private int getSearchRadius(Context mcontext){
+        SharedPreferences sharedPreferences = mcontext.getSharedPreferences("user_data", mcontext.MODE_PRIVATE);
+        int raio = sharedPreferences.getInt("raio", 0);
+        return raio;
+
+    }
+
+    private LatLng getMyLocation(){
+
+        MyLocation appLocationManager = new MyLocation(myContext);
+        Double myLat = appLocationManager.getLatitude();
+        Double myLon = appLocationManager.getLongitude();
+        return new LatLng(myLat, myLon);
+
     }
 
     public void getPins(){
@@ -97,7 +121,8 @@ public class PinPointRestClient
 
     public void getClusters(){
         LoadGeoJsonPins downloadGeoJsonPins = new LoadGeoJsonPins(this);
-        downloadGeoJsonPins.execute(mGeoJsonUrl);
+        //downloadGeoJsonPins.execute(mGeoJsonUrl);
+        downloadGeoJsonPins.execute(mGeoJsonFilterUrl);
     }
 
 
@@ -133,6 +158,9 @@ public class PinPointRestClient
             String json = null;
             HttpURLConnection urlConnection = null;
             try {
+
+                URL url = new URL(mGeoJsonUrl);
+
                 urlConnection = (HttpURLConnection) url.openConnection();
                 urlConnection.setRequestMethod("POST");
                 urlConnection.setDoInput(true);
@@ -141,10 +169,13 @@ public class PinPointRestClient
                 Uri.Builder builder = null;
 
                 try {
+
+                    String img_base64 = "data:image/jpg;base64," +params[0].getString("pic");
                     builder = new Uri.Builder()
                             .appendQueryParameter("descr", params[0].getString("descr"))
                             .appendQueryParameter("type", params[0].getString("type"))
-                            .appendQueryParameter("geom", params[0].getString("geometry"));
+                            .appendQueryParameter("geom", params[0].getString("geometry"))
+                            .appendQueryParameter("pic", img_base64);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -268,29 +299,11 @@ public class PinPointRestClient
             return null;
         }
 
-        /**
-         * Sets the color map to change the color of the marker based on pin type
-         */
-        private void setColorMap() {
-
-            hcolor = new HashMap<Integer, Float>();
-            hcolor.put(1, BitmapDescriptorFactory.HUE_RED);
-            hcolor.put(2, BitmapDescriptorFactory.HUE_ORANGE);
-            hcolor.put(3, BitmapDescriptorFactory.HUE_YELLOW);
-            hcolor.put(4, BitmapDescriptorFactory.HUE_GREEN);
-            hcolor.put(5, BitmapDescriptorFactory.HUE_CYAN);
-            hcolor.put(6, BitmapDescriptorFactory.HUE_AZURE);
-            hcolor.put(7, BitmapDescriptorFactory.HUE_BLUE);
-            hcolor.put(8, BitmapDescriptorFactory.HUE_VIOLET);
-            hcolor.put(9, BitmapDescriptorFactory.HUE_MAGENTA);
-            hcolor.put(10, BitmapDescriptorFactory.HUE_ROSE);
-        }
-
         @Override
         protected void onPostExecute(JSONObject jsonObject) {
 
-            Double lat = null;
-            Double lon = null;
+            /*Double lat = null;
+            Double lon = null;*/
 
             if (jsonObject != null) {
 
@@ -317,19 +330,21 @@ public class PinPointRestClient
 
                 setColorMap();
 
-                MyLocation appLocationManager = new MyLocation(myContext);
+                /*MyLocation appLocationManager = new MyLocation(myContext);
                 lat = appLocationManager.getLatitude();
-                lon = appLocationManager.getLongitude();
-                appLocationManager.getLongitude();
+                lon = appLocationManager.getLongitude();*/
+                //appLocationManager.getLongitude();
 
-                if (lon != null && lat != null){
+                if (((Double) myLatLng.longitude) != null && ((Double) myLatLng.latitude) != null){
 
                     //center map
-                    getMap().moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lat, lon), 16));
+                    //getMap().moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lat, lon), 16));
+                    getMap().moveCamera(CameraUpdateFactory.newLatLngZoom(myLatLng, 16));
+
 
                     //show pin
                     MarkerOptions markerOptions = new MarkerOptions();
-                    markerOptions.position(new LatLng(lat, lon));
+                    markerOptions.position(myLatLng);
                     markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.blue_pin));
                     getMap().addMarker(markerOptions);
 
@@ -338,8 +353,6 @@ public class PinPointRestClient
                     LatLng lisbon = new LatLng(38.72, -9.18);
                     getMap().moveCamera(CameraUpdateFactory.newLatLngZoom(lisbon, 12));
                 }
-
-
 
 
                 mClusterManager.setOnClusterClickListener(new ClusterManager.OnClusterClickListener<Pin>() {
@@ -355,15 +368,7 @@ public class PinPointRestClient
                 mClusterManager.setOnClusterItemClickListener(new ClusterManager.OnClusterItemClickListener<Pin>() {
                     @Override
                     public boolean onClusterItemClick(Pin item) {
-                        Log.e(mLogTag, "onClusterItemClick " + item.getPosition().latitude);
                         clickedClusterItem = item;
-
-                        /*m = myMap.addMarker(new MarkerOptions()
-                                .title(item.getName())
-                                .snippet(item.getName())
-                                .position(item.getPosition()));*/
-                        //hmap.put(m, 1);
-
                         return false;
                     }
                 });
@@ -381,6 +386,24 @@ public class PinPointRestClient
                 //mClusterManager.addItems(items);
             }
         }
+
+        /**
+         * Sets the color map to change the color of the marker based on pin type
+         */
+        private void setColorMap() {
+
+            hcolor = new HashMap<Integer, Float>();
+            hcolor.put(1, BitmapDescriptorFactory.HUE_RED);
+            hcolor.put(2, BitmapDescriptorFactory.HUE_ORANGE);
+            hcolor.put(3, BitmapDescriptorFactory.HUE_YELLOW);
+            hcolor.put(4, BitmapDescriptorFactory.HUE_GREEN);
+            hcolor.put(5, BitmapDescriptorFactory.HUE_CYAN);
+            hcolor.put(6, BitmapDescriptorFactory.HUE_AZURE);
+            hcolor.put(7, BitmapDescriptorFactory.HUE_BLUE);
+            hcolor.put(8, BitmapDescriptorFactory.HUE_VIOLET);
+            hcolor.put(9, BitmapDescriptorFactory.HUE_MAGENTA);
+            hcolor.put(10, BitmapDescriptorFactory.HUE_ROSE);
+        }
     }
 
     private class PinRenderer extends DefaultClusterRenderer<Pin> {
@@ -393,16 +416,19 @@ public class PinPointRestClient
         protected void onBeforeClusterItemRendered(Pin item, MarkerOptions markerOptions) {
             // Draw a single pin.
             // Set the info window to show their name.
+
+            //another way to show pins
+            /*IconGenerator iconFactory = new IconGenerator(myContext);
+            iconFactory.setStyle(IconGenerator.STYLE_GREEN);
+            iconFactory.setContentRotation(90);
+            Bitmap iconBitmap = iconFactory.makeIcon(item.getDescr());
+            markerOptions.icon(BitmapDescriptorFactory.fromBitmap(iconBitmap));*/
+
+
             markerOptions.title(item.getDescr());
             markerOptions.snippet(String.valueOf(item.getIdent()));
             markerOptions.icon(BitmapDescriptorFactory.defaultMarker(hcolor.get(item.getType())));
 
-            /*hmap = new HashMap<Pin, Integer>();
-            hmap.put(item, item.getIdent());*/
-
-            /*for (GeoJsonFeature feature : mLayer.getFeatures()) {
-                Log.e(mLogTag, "geometry type = " + feature.getGeometry().getType());
-            }*/
         }
 
     }
@@ -417,6 +443,7 @@ public class PinPointRestClient
 
             HttpURLConnection urlConnection = null;
             try {
+                URL url = new URL(mGeoJsonUrl);
                 urlConnection = (HttpURLConnection) url.openConnection();
                 InputStream in = new BufferedInputStream(urlConnection.getInputStream());
                 //json = convertInputStreamToString(in);
@@ -461,16 +488,5 @@ public class PinPointRestClient
             }
         }
     }
-
-    /*private static String convertInputStreamToString(InputStream inputStream) throws IOException{
-        BufferedReader bufferedReader = new BufferedReader( new InputStreamReader(inputStream));
-        String line = "";
-        String result = "";
-        while((line = bufferedReader.readLine()) != null)
-            result += line;
-
-        inputStream.close();
-        return result;
-    }*/
 
 }

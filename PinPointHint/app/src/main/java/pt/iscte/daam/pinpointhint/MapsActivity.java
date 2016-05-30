@@ -1,27 +1,25 @@
 package pt.iscte.daam.pinpointhint;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.Toast;
 
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.toolbox.Volley;
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -32,18 +30,17 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.TileOverlay;
 import com.google.android.gms.maps.model.TileOverlayOptions;
 import com.google.maps.android.clustering.ClusterManager;
-import com.google.maps.android.geojson.GeoJsonLayer;
 import com.google.maps.android.heatmaps.HeatmapTileProvider;
 import com.google.maps.android.ui.IconGenerator;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import pt.iscte.daam.pinpointhint.common.ActivityUtils;
 import pt.iscte.daam.pinpointhint.model.Pin;
@@ -55,6 +52,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private ActivityUtils pinUtils;
     protected Marker tempMarker;
     protected LatLng latlong;
+    protected LatLng latlongDetails;
     RadioButton bUserDetails;
     private static final int REQUEST_ADD_PINPOINT = 2;
     private final static String mLogTag = "pin point log";
@@ -128,12 +126,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     public void showList(View v) {
         Intent i = new Intent(MapsActivity.this, ListActivity.class);
-
         JSONObject jsonPins = pins.getJSONPins();
         i.putExtra("PINS", jsonPins.toString());
-
         startActivity(i);
-        //http://stackoverflow.com/questions/2736389/how-to-pass-an-object-from-one-activity-to-another-on-android
     }
 
     public void showPins(View v) {
@@ -151,7 +146,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         clusterMngr.clearItems();
         clusterMngr.getClusterMarkerCollection().clear();
         clusterMngr.getMarkerCollection().clear();
-        //Toast.makeText(getBaseContext(), "Show heat map! "+ nPins.size(), Toast.LENGTH_LONG).show();
 
         pinUtils = new ActivityUtils();
         ArrayList<LatLng> list = pinUtils.readItems(nPins);
@@ -177,6 +171,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         mMap.addMarker(markerOptions);
     }
+
+
 
 
     /**
@@ -209,8 +205,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     Intent i = new Intent(MapsActivity.this, DetailsActivity.class);
                     String pinID = marker.getSnippet();
                     String descr = marker.getTitle();
+                    latlongDetails = marker.getPosition();
                     i.putExtra("ID", pinID);
                     i.putExtra("DESCR", descr);
+                    i.putExtra("LAT",latlongDetails.latitude);
                     startActivity(i);
                 }
             }
@@ -234,8 +232,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
-
-
         //add pins to map via rest api call
         try {
             pins = new PinPointRestClient(getBaseContext(), mMap);
@@ -255,18 +251,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(resultCode == Activity.RESULT_OK) {
-            //itemCalc.setText(data.getStringExtra("RESULT"));
-
             JSONObject JSONpin = new JSONObject();
             try {
+                String encoded_string = data.getStringExtra("FILE");
                 JSONpin.put("geometry", "{ 'type': 'Point', 'coordinates': ["+latlong.longitude+", "+latlong.latitude+"] }");
                 JSONpin.put("descr", data.getStringExtra("DESCR"));
                 JSONpin.put("type", data.getIntExtra("TYPE", 0));
+                JSONpin.put("pic", encoded_string);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
             pins.addNewPinPoint(JSONpin);
-
         }
     }
 

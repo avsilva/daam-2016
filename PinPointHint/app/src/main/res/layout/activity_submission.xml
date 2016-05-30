@@ -56,7 +56,7 @@
         android:layout_marginBottom="36dp"
         android:background="#19307c"
         android:onClick="next"
-        android:text="@string/bSubNext"
+        android:text="@string/bSubSubmit"
         android:textColor="@android:color/white" />
 
     <Spinner

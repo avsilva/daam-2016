@@ -10,16 +10,17 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -34,6 +35,8 @@ import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileDescriptor;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -55,7 +58,7 @@ public class SubmissionActivity extends AppCompatActivity implements View.OnClic
     private String encoded_string, image_name;
     private Bitmap bitmap;
     private File file;
-    private Uri file_uri;
+    protected Uri file_uri;
 
 
 
@@ -86,14 +89,6 @@ public class SubmissionActivity extends AppCompatActivity implements View.OnClic
         if (v.getId() == R.id.etSubDescription) {
             etSubDescription.setText(ActivityUtils.EMPTY_STRING);
         }
-
-        /*if (v.getId() == R.id.etSubEmail) {
-            etSubEmail.setText(ActivityUtils.EMPTY_STRING);
-        }
-
-        if (v.getId() == R.id.etSubGPS) {
-            etSubGPS.setText(ActivityUtils.EMPTY_STRING);
-        }*/
     }
 
     /**
@@ -102,60 +97,77 @@ public class SubmissionActivity extends AppCompatActivity implements View.OnClic
      * @param v The view on which the event to take and load a photo is performed.
      */
     public void photo(View v) {
-        //TODO
-
 
         //Aceder a função de foto do sistema operativo e guardar a imagem em memória
         ivSub.setVisibility(View.VISIBLE);
         btSubNext.setVisibility(View.VISIBLE);
 
-        //Toast toast = Toast.makeText(getApplicationContext(),
-        //        R.string.photoLoaded, Toast.LENGTH_SHORT);
-        //toast.show();
-
         //newcode
         Intent i = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        getFileUri();
+
+        /*file_uri = getFileUri();
+
         i.putExtra(MediaStore.EXTRA_OUTPUT, file_uri);
-        startActivityForResult(i, 10);
+        i.putExtra("FILE", file_uri.getPath());
+
+        startActivityForResult(i, 10);*/
+        if (i.resolveActivity(getPackageManager()) != null) {
+            startActivityForResult(i, 10);
+        } else {
+            Log.e(mLogTag, "NOT AVAILABLE");
+        }
 
 
     }
 
     //newcode
-    private void getFileUri() {
-        String lat1 = String.valueOf(lat).substring(0,10);
+    private Uri getFileUri() {
+        String lat1 = String.valueOf(lat).substring(0, 10);
         image_name="" + lat1 + ".jpg";
         // image_name.concat(String.valueOf(lat));
         file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
                 + File.separator + image_name
         );
 
-        file_uri = Uri.fromFile(file);
+        return Uri.fromFile(file);
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         if (requestCode == 10 && resultCode == RESULT_OK) {
-            new Encode_image().execute();
+
+            Bundle extras = data.getExtras();
+            Bitmap imageBitmap = (Bitmap) extras.get("data");
+            ivSub.setImageBitmap(imageBitmap);
+
+            //Log.e(mLogTag, "file_uri2 = " + file_uri.getPath());
+            //Log.e(mLogTag, "FILE = " + data.getStringExtra("FILE"));
+
+            new Encode_image().execute(imageBitmap);
+            /*Bitmap imageRetrieved = (Bitmap) data.getExtras().get("data");
+            Log.e(mLogTag, "FILE = " + imageRetrieved.toString());*/
         }
     }
-    private class Encode_image extends AsyncTask<Void, Void, Void> {
+    private class Encode_image extends AsyncTask<Bitmap, Void, Void> {
         @Override
-        protected Void doInBackground(Void... voids) {
+        protected Void doInBackground(Bitmap... bmap) {
 
-            bitmap = BitmapFactory.decodeFile(file_uri.getPath());
+            //Log.e(mLogTag, "file_uri3 = " + file_uri.getPath());
+            //bitmap = BitmapFactory.decodeFile(file_uri.getPath());
+            bitmap = bmap[0];
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
 
             byte[] array = stream.toByteArray();
             encoded_string = Base64.encodeToString(array, 0);
+
             return null;
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            makeRequest();
+            //Log.e(mLogTag, "encoded_string2 = " + encoded_string);
+            //makeRequest();
         }
     }
 
@@ -198,16 +210,15 @@ public class SubmissionActivity extends AppCompatActivity implements View.OnClic
         //startActivity(new Intent(v.getContext(), SubmissionClassificationActivity.class));
 
         Intent result = new Intent();
-
         result.putExtra("DESCR", etSubDescription.getText().toString());
-
         PinType type = (PinType)spinnerSubType.getSelectedItem();
         result.putExtra("TYPE", type.id);
 
-        result.putExtra("LAT", lat);
+        result.putExtra("FILE", encoded_string);
         setResult(Activity.RESULT_OK, result);
 
-        SharedPreferences sharedPreferences = getSharedPreferences("user_data", MODE_PRIVATE);
+
+        /*SharedPreferences sharedPreferences = getSharedPreferences("user_data", MODE_PRIVATE);
         String email = sharedPreferences.getString("username", "");
         //final int n_pins = sharedPreferences.getInt("n_pins", 0);
         //final int nPinsIncrement = n_pins+1;
@@ -235,12 +246,9 @@ public class SubmissionActivity extends AppCompatActivity implements View.OnClic
 
         IncrementPinRequest incrementRequest = new IncrementPinRequest(email, responseListener);
         RequestQueue queue = Volley.newRequestQueue(SubmissionActivity.this);
-        queue.add(incrementRequest);
+        queue.add(incrementRequest);*/
 
         //newcode
-
-
-
         finish();
 
     }
@@ -250,8 +258,6 @@ public class SubmissionActivity extends AppCompatActivity implements View.OnClic
      */
     private void addListeners() {
         etSubDescription.setOnClickListener(this);
-        //etSubEmail.setOnClickListener(this);
-        //etSubGPS.setOnClickListener(this);
     }
 
     /**
@@ -260,8 +266,6 @@ public class SubmissionActivity extends AppCompatActivity implements View.OnClic
      */
     private void retrieveFieldInformation() {
         etSubDescription = (EditText) findViewById(R.id.etSubDescription);
-        //etSubEmail = (EditText) findViewById(R.id.etSubEmail);
-        //etSubGPS = (EditText) findViewById(R.id.etSubGPS);
         spinnerSubType = (Spinner)this.findViewById(R.id.spinnerSubType);
         setSpinnerAdapter();
 
