@@ -69,14 +69,10 @@ public class DetailsActivity extends AppCompatActivity {
         final String id = i.getStringExtra("ID");
         final String descr = i.getStringExtra("DESCR");
         lat = i.getDoubleExtra("LAT",0.0);
-        imgName = String.valueOf(lat).substring(0, 10);
         final Double lon = i.getDoubleExtra("LONG",0.0);
-
-        //satellite();
 
         try {
             url = new URL(APIURL + id.toString());
-            Log.e(mLogTag, "URL = "+ APIURL + id.toString());
 
             getPinDetails details = new getPinDetails();
             details.execute();
@@ -84,16 +80,6 @@ public class DetailsActivity extends AppCompatActivity {
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
-
-        /*FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action" + id.toString(), Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-                finish();
-            }
-        });*/
     }
 
 
@@ -157,16 +143,7 @@ public class DetailsActivity extends AppCompatActivity {
         }
     }
 
-    private void satellite() {
 
-        new yourTask().execute();
-    }
-
-    /*private Drawable LoadImageFromWeb(String url){
-
-
-
-    }*/
 
     private Drawable LoadImageFromWeb(String url){
         try{
@@ -217,7 +194,6 @@ public class DetailsActivity extends AppCompatActivity {
 
             ivDetails.setImageBitmap(newbitMap);
 
-            //ivDetails.setImageDrawable(drawable);
 
         }
     }
@@ -254,7 +230,6 @@ public class DetailsActivity extends AppCompatActivity {
 
         Bitmap newbitMap = Bitmap.createScaledBitmap(bitmap, newWidth, newHeight, true);
         return newbitMap;
-
     }
 
 }

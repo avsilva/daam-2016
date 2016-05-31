@@ -52,7 +52,6 @@ public class UserDetailsActivity extends AppCompatActivity {
 
         SharedPreferences sharedPreferences = getSharedPreferences("user_data", MODE_PRIVATE);
         final String email = sharedPreferences.getString("username","");
-        //String password = sharedPreferences.getString("password","");
         String nome = sharedPreferences.getString("nome","");
         int n_pins = sharedPreferences.getInt("n_pins", 0);
         int raio = sharedPreferences.getInt("raio",0);
@@ -147,82 +146,6 @@ public class UserDetailsActivity extends AppCompatActivity {
                     RequestQueue queue = Volley.newRequestQueue(UserDetailsActivity.this);
                     queue.add(userDetailsRequest);
                 }
-//                else if(isValidNome(nome) && !isValidPassword(password) && isValidRaio(Integer.valueOf(raioString))){
-//                    Response.Listener<String> responseListener = new Response.Listener<String>() {
-//                        @Override
-//                        public void onResponse(String response) {
-//                            try {
-//                                JSONObject jsonResponse = new JSONObject(response);
-//                                boolean success = jsonResponse.getBoolean("success");
-//                                String nome = jsonResponse.getString("nome");
-//                                String raio = jsonResponse.getString("raio");
-//                                if (success) {
-//                                    SharedPreferences sharedPreferences = getSharedPreferences("user_data", MODE_PRIVATE);
-//                                    sharedPreferences.edit().putString("nome", nome).apply();
-//                                    sharedPreferences.edit().putInt("raio", Integer.valueOf(raio)).apply();
-//                                    Intent intent = getIntent();
-//                                    finish();
-//                                    startActivity(intent);
-//                                }
-//                            } catch (JSONException e) {
-//                                e.printStackTrace();
-//                            }
-//                        }
-//                    };
-//
-//                    UserDetailsRequest userDetailsRequest = new UserDetailsRequest(email, nome, "", responseListener);
-//                    RequestQueue queue = Volley.newRequestQueue(UserDetailsActivity.this);
-//                    queue.add(userDetailsRequest);
-//                }
-//                else if(!isValidNome(nome) && isValidPassword(password) && isValidRaio(Integer.valueOf(raioString))){
-//                    Response.Listener<String> responseListener = new Response.Listener<String>() {
-//                        @Override
-//                        public void onResponse(String response) {
-//                            try {
-//                                JSONObject jsonResponse = new JSONObject(response);
-//                                boolean success = jsonResponse.getBoolean("success");
-//                                String nome = jsonResponse.getString("nome");
-//                                if (success) {
-//                                    SharedPreferences sharedPreferences = getSharedPreferences("user_data", MODE_PRIVATE);
-//                                    sharedPreferences.edit().putInt("raio", Integer.valueOf(raioString)).apply();
-//                                    Intent intent = getIntent();
-//                                    finish();
-//                                    startActivity(intent);
-//                                }
-//                            } catch (JSONException e) {
-//                                e.printStackTrace();
-//                            }
-//                        }
-//                    };
-//
-//                    UserDetailsRequest userDetailsRequest = new UserDetailsRequest(email, "", password, responseListener);
-//                    RequestQueue queue = Volley.newRequestQueue(UserDetailsActivity.this);
-//                    queue.add(userDetailsRequest);
-//                }
-//                else if(!isValidPassword(password) && !isValidNome(nome) && isValidRaio(Integer.valueOf(raioString))){
-//                    Response.Listener<String> responseListener = new Response.Listener<String>() {
-//                        @Override
-//                        public void onResponse(String response) {
-//                            try {
-//                                JSONObject jsonResponse = new JSONObject(response);
-//                                boolean success = jsonResponse.getBoolean("success");
-//                                int raio = jsonResponse.getInt("raio");
-//                                if (success) {
-//
-//                                    Intent intent = getIntent();
-//                                    finish();
-//                                    startActivity(intent);
-//                                }
-//                            } catch (JSONException e) {
-//                                e.printStackTrace();
-//                            }
-//                        }
-//                    };
-//
-//                    UserDetailsRequest userDetailsRequest = new UserDetailsRequest(email, "","", responseListener);
-//                    RequestQueue queue = Volley.newRequestQueue(UserDetailsActivity.this);
-//                    queue.add(userDetailsRequest);
-//                }
                 else if(isValidRaio(Integer.valueOf(raioString))){
                     Response.Listener<String> responseListener = new Response.Listener<String>() {
                         @Override
@@ -264,20 +187,6 @@ public class UserDetailsActivity extends AppCompatActivity {
 
     }
 
-//    @Override
-//    protected void onResume(){
-//        super.onResume();
-//        SharedPreferences sharedPreferences = getSharedPreferences("user_data", MODE_PRIVATE);
-//        int n_pins = sharedPreferences.getInt("n_pins", 0) + 1 ;
-//        numPinsLayout.setText(Integer.toString(n_pins));
-//    }
-//    @Override
-//    protected void onRestart(){
-//        super.onRestart();
-//        SharedPreferences sharedPreferences = getSharedPreferences("user_data", MODE_PRIVATE);
-//        int n_pins = sharedPreferences.getInt("n_pins", 0) + 1 ;
-//        numPinsLayout.setText(Integer.toString(n_pins));
-//    }
 
     private boolean isValidNome(String nome){
         if(nome.length()>2 && !nome.matches(".*\\d.*")){
@@ -294,7 +203,7 @@ public class UserDetailsActivity extends AppCompatActivity {
         return false;
     }
     private boolean isValidRaio( int raio){
-        if(raio>0 && raio<100000){
+        if(raio>0 && raio<10000000){
             return true;
         }
         return false;

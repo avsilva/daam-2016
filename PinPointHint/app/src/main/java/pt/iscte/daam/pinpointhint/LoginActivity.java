@@ -60,10 +60,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         try {
                             JSONObject jsonResponse = new JSONObject(response);
                             boolean success = jsonResponse.getBoolean("success");
-                            String nome = jsonResponse.getString("name");
-                            int n_pins = jsonResponse.getInt("n_pins");
-                            int raio=jsonResponse.getInt("raio");
                             if (success) {
+                                String nome = jsonResponse.getString("name");
+                                int n_pins = jsonResponse.getInt("n_pins");
+                                int raio=jsonResponse.getInt("raio");
+
                                 SharedPreferences sharedPreferences = getSharedPreferences("user_data", MODE_PRIVATE);
                                 SharedPreferences.Editor editor = sharedPreferences.edit();
                                 editor.putString("username", email);

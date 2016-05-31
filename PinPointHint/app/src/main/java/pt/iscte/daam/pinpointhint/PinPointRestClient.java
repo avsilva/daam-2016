@@ -67,7 +67,7 @@ public class PinPointRestClient
     private JSONObject jsonPins;
 
     private LatLng myLatLng = null;
-    private int mySearchRadius = 500;
+    private int mySearchRadius = 5000;
     private String mGeoJsonFilterUrl = "";
 
     private ActivityUtils pinUtils;
@@ -100,7 +100,7 @@ public class PinPointRestClient
 
     private int getSearchRadius(Context mcontext){
         SharedPreferences sharedPreferences = mcontext.getSharedPreferences("user_data", mcontext.MODE_PRIVATE);
-        int raio = sharedPreferences.getInt("raio", 0);
+        int raio = sharedPreferences.getInt("raio", 5000);
         return raio;
 
     }
@@ -307,7 +307,6 @@ public class PinPointRestClient
 
             if (jsonObject != null) {
 
-                //Log.e(mLogTag, jsonObject.toString());
                 jsonPins = jsonObject;
                 mLayer = new GeoJsonLayer(myMap, jsonObject);
 
@@ -358,7 +357,6 @@ public class PinPointRestClient
                 mClusterManager.setOnClusterClickListener(new ClusterManager.OnClusterClickListener<Pin>() {
                     @Override
                     public boolean onClusterClick(Cluster<Pin> cluster) {
-                        //Log.e(mLogTag, "onClusterItemClick " + cluster.getSize());
                         Toast.makeText(myContext, "ZOOM IN PLEASE!", Toast.LENGTH_LONG).show();
                         clickedCluster = cluster; // remember for use later in the Adapter
                         return false;
@@ -374,16 +372,15 @@ public class PinPointRestClient
                 });
 
 
-                mClusterManager.setOnClusterItemInfoWindowClickListener(new ClusterManager.OnClusterItemInfoWindowClickListener<Pin>() {
+                /*mClusterManager.setOnClusterItemInfoWindowClickListener(new ClusterManager.OnClusterItemInfoWindowClickListener<Pin>() {
                     @Override
                     public void onClusterItemInfoWindowClick(Pin item) {
                         Log.e(mLogTag, "onClusterItemInfoWindowClick " + item.getPosition().latitude);
                     }
                     // Does nothing, but you could go into the user's profile page, for example.
-                });
+                });*/
 
                 caller.onBackgroundTaskCompleted();
-                //mClusterManager.addItems(items);
             }
         }
 

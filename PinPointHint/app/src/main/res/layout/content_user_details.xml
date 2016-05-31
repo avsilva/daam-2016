@@ -13,4 +13,10 @@
     tools:showIn="@layout/activity_user_details"
     tools:context="pt.iscte.daam.pinpointhint.UserDetailsActivity">
 
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:ems="10"
+        android:id="@+id/editText" />
 </RelativeLayout>
