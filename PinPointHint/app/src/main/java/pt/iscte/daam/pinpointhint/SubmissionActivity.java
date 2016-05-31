@@ -21,6 +21,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -137,14 +138,23 @@ public class SubmissionActivity extends AppCompatActivity implements View.OnClic
     public void next(View v) {
 
         Intent result = new Intent();
-        result.putExtra("DESCR", etSubDescription.getText().toString());
-        PinType type = (PinType)spinnerSubType.getSelectedItem();
-        result.putExtra("TYPE", type.id);
 
-        result.putExtra("FILE", encoded_string);
-        setResult(Activity.RESULT_OK, result);
 
-        finish();
+
+
+        if (encoded_string == null) {
+            Toast.makeText(getBaseContext(), "Por favor inclua uma foto da sugestão!", Toast.LENGTH_LONG).show();
+        } else{
+            PinType type = (PinType)spinnerSubType.getSelectedItem();
+            result.putExtra("TYPE", type.id);
+            result.putExtra("DESCR", etSubDescription.getText().toString());
+            result.putExtra("FILE", encoded_string);
+            setResult(Activity.RESULT_OK, result);
+            finish();
+        }
+
+
+
     }
 
     /**
