@@ -139,9 +139,6 @@ public class SubmissionActivity extends AppCompatActivity implements View.OnClic
 
         Intent result = new Intent();
 
-
-
-
         if (encoded_string == null) {
             Toast.makeText(getBaseContext(), "Por favor inclua uma foto da sugestão!", Toast.LENGTH_LONG).show();
         } else{
@@ -152,9 +149,6 @@ public class SubmissionActivity extends AppCompatActivity implements View.OnClic
             setResult(Activity.RESULT_OK, result);
             finish();
         }
-
-
-
     }
 
     /**

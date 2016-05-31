@@ -148,9 +148,6 @@ public class PinPointRestClient
                 Uri.Builder builder = null;
 
                 try {
-
-                    Log.e(mLogTag, "pic "+ params[0].getString("pic"));
-
                     String img_base64 = "data:image/jpg;base64," +params[0].getString("pic");
                     builder = new Uri.Builder()
                             .appendQueryParameter("descr", params[0].getString("descr"))
@@ -158,7 +155,6 @@ public class PinPointRestClient
                             .appendQueryParameter("geom", params[0].getString("geometry"))
                             .appendQueryParameter("pic", img_base64);
                 } catch (JSONException e) {
-                    Log.e(mLogTag, "pic "+ e.toString());
                     e.printStackTrace();
                 }
 
