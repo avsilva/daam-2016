@@ -218,6 +218,7 @@ public class SubmissionActivity extends AppCompatActivity implements View.OnClic
         setResult(Activity.RESULT_OK, result);
 
 
+
         /*SharedPreferences sharedPreferences = getSharedPreferences("user_data", MODE_PRIVATE);
         String email = sharedPreferences.getString("username", "");
         //final int n_pins = sharedPreferences.getInt("n_pins", 0);

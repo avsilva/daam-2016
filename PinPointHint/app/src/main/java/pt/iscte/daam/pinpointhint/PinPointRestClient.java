@@ -218,6 +218,9 @@ public class PinPointRestClient
         @Override
         protected void onPostExecute(String result)
         {
+            SharedPreferences sharedPreferences = myContext.getSharedPreferences("user_data", myContext.MODE_PRIVATE);
+            int n_pins = sharedPreferences.getInt("n_pins", 0);
+            sharedPreferences.edit().putInt("n_pins", (n_pins + 1)).commit();
 
         }
     }
