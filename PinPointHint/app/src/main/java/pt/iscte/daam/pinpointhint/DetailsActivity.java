@@ -33,16 +33,11 @@ public class DetailsActivity extends AppCompatActivity {
     private URL url;
     private final static String mLogTag = "pin point log";
     private ActivityUtils pinUtils;
-
     private TextView tvDescr1;
     private TextView tvType1;
     private TextView tvStatus1;
     private TextView tvData1;
-
     private ImageView ivDetails;
-    private TextView tvDetails;
-    private Double lat;
-    String imgName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,12 +46,7 @@ public class DetailsActivity extends AppCompatActivity {
         //allow networking operation on main thread
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
-
-        //setContentView(R.layout.activity_details_test_imagem);
         setContentView(R.layout.activity_details);
-        //Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        //setSupportActionBar(toolbar);
-
 
         tvDescr1 = (TextView) findViewById(R.id.tvDescr1);
         tvType1 = (TextView) findViewById(R.id.tvType1);
@@ -64,12 +54,8 @@ public class DetailsActivity extends AppCompatActivity {
         tvData1 = (TextView) findViewById(R.id.tvData1);
         ivDetails = (ImageView) findViewById(R.id.ivDetails);
 
-
         Intent i = getIntent();
         final String id = i.getStringExtra("ID");
-        final String descr = i.getStringExtra("DESCR");
-        lat = i.getDoubleExtra("LAT",0.0);
-        final Double lon = i.getDoubleExtra("LONG",0.0);
 
         try {
             url = new URL(APIURL + id.toString());
@@ -81,7 +67,6 @@ public class DetailsActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
-
 
     private class getPinDetails extends AsyncTask<String, Void, String> {
 
@@ -118,17 +103,13 @@ public class DetailsActivity extends AppCompatActivity {
                 SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSS");
 
                 Date d = format.parse(data);
-
-
                 String pic = t_poi_properties.getString("pic");
 
                 if (pic != "null"){
-                    Log.e(mLogTag, "pic = "+ pic);
                     drawable  =  LoadImageFromWeb(pic);
                     Bitmap bitmap = drawableToBitmap(drawable);
                     Bitmap newbitMap = setImageViewContent(bitmap);
                     ivDetails.setImageBitmap(newbitMap);
-
                 }
 
                 tvDescr1.setText(descr);
@@ -143,60 +124,16 @@ public class DetailsActivity extends AppCompatActivity {
         }
     }
 
-
-
     private Drawable LoadImageFromWeb(String url){
         try{
             InputStream is = (InputStream) new URL(url).getContent();
             Drawable d = Drawable.createFromStream(is, "src name");
             return d;
         }catch (Exception e) {
-            Log.e(mLogTag, "LoadImageFromWeb - = " + e.toString());
-            System.out.println("Exc="+e);
             return null;
         }
     }
 
-    private class yourTask extends AsyncTask<Integer, Void, Integer> {
-        Drawable drawable;
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            //show a progress bar
-        }
-
-        @Override
-        protected Integer doInBackground(Integer... params) {
-
-            Log.e(mLogTag, "imgName = "+ imgName.toString());
-            drawable  =  LoadImageFromWeb("http://daam.coolpage.biz/images/" + imgName + ".jpg");
-            return 0;
-        }
-
-        @Override
-        protected void onPostExecute(Integer result) {
-            super.onPostExecute(result);
-
-            Log.e(mLogTag, "result = "+ result.toString());
-
-            Bitmap bitmap = drawableToBitmap(drawable);
-            int currentBitmapWidth = bitmap.getWidth();
-
-            int currentBitmapHeight = bitmap.getHeight();
-
-            int ivWidth = ivDetails.getWidth();
-            int ivHeight = ivDetails.getHeight();
-            int newWidth = ivWidth;
-
-            int newHeight = (int) Math.floor((double) currentBitmapHeight *( (double) newWidth / (double) currentBitmapWidth));
-
-            Bitmap newbitMap = Bitmap.createScaledBitmap(bitmap, newWidth, newHeight, true);
-
-            ivDetails.setImageBitmap(newbitMap);
-
-
-        }
-    }
 
     private static Bitmap drawableToBitmap (Drawable drawable) {
         Bitmap bitmap = null;
@@ -231,5 +168,4 @@ public class DetailsActivity extends AppCompatActivity {
         Bitmap newbitMap = Bitmap.createScaledBitmap(bitmap, newWidth, newHeight, true);
         return newbitMap;
     }
-
 }

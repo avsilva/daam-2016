@@ -64,16 +64,18 @@
             android:name=".MapsActivity"
             android:label="@string/title_activity_maps" />
 
-
         <activity
             android:name=".DetailsActivity"
-            android:label="@string/title_activity_details"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:label="Detalhes da sugestão"/>
+
         <activity
             android:name=".UserDetailsActivity"
-            android:label="@string/title_activity_user_details"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".ListActivity"></activity>
+            android:label="@string/title_activity_user_details"/>
+            <!--android:theme="@style/AppTheme.NoActionBar" />-->
+        <activity
+            android:name=".ListActivity"
+            android:label="Lista de sugestões"/>
+
         <!-- ATTENTION: This was auto-generated to add Google Play services to your project for
              App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information. -->
         <meta-data

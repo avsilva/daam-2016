@@ -28,7 +28,6 @@ import pt.iscte.daam.pinpointhint.common.ActivityUtils;
 public class RegistrationActivity extends AppCompatActivity implements View.OnClickListener {
     private EditText etRegName;
     private EditText etRegEmail;
-    //private EditText etRegPhone;
     private EditText etRegPassword;
     private EditText etRegPasswordConfirm;
     private Button bRegSubmit;
@@ -54,10 +53,6 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
         if (v.getId() == R.id.etRegEmail) {
             etRegEmail.setText(ActivityUtils.EMPTY_STRING);
         }
-
-//        if (v.getId() == R.id.etRegPhone) {
-//            etRegPhone.setText(ActivityUtils.EMPTY_STRING);
-//        }
 
         if (v.getId() == R.id.etRegPassword) {
             etRegPassword.setText(ActivityUtils.EMPTY_STRING);
@@ -85,7 +80,6 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
     private void addListeners() {
         etRegName.setOnClickListener(this);
         etRegEmail.setOnClickListener(this);
-        //etRegPhone.setOnClickListener(this);
         etRegPassword.setOnClickListener(this);
         etRegPasswordConfirm.setOnClickListener(this);
         bRegSubmit.setOnClickListener(new View.OnClickListener() {
@@ -95,7 +89,7 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
                 final String email = etRegEmail.getText().toString();
                 final String password = etRegPassword.getText().toString();
                 final String passwordConfirm=etRegPasswordConfirm.getText().toString();
-                //boolean cancel=false;
+
                 if(!isValidNome(nome)){
                     etRegName.setError("Nome inválido");
                     etRegName.requestFocus();
@@ -116,11 +110,7 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
                     etRegPasswordConfirm.requestFocus();
                 //    cancel=true;
                 } else{
-                //if(cancel){
-                //    AlertDialog.Builder builder = new AlertDialog.Builder(RegistrationActivity.this);
-                //    builder.setMessage("Campos inválidos").setNegativeButton("Retry", null).create().show();
 
-                //} else {
                     Response.Listener<String> responseListener = new Response.Listener<String>() {
 
                         @Override
@@ -157,7 +147,6 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
     private void retrieveFieldInformation() {
         etRegName = (EditText) findViewById(R.id.etRegName);
         etRegEmail = (EditText) findViewById(R.id.etRegEmail);
-        //etRegPhone = (EditText) findViewById(R.id.etRegPhone);
         etRegPassword = (EditText) findViewById(R.id.etRegPassword);
         etRegPasswordConfirm = (EditText) findViewById(R.id.etRegPasswordConfirm);
         bRegSubmit = (Button) findViewById(R.id.bRegSubmit);
@@ -183,7 +172,6 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
             return true;
         }
         return false;
-
 
     }
 

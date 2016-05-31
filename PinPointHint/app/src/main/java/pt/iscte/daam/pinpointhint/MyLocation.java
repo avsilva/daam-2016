@@ -79,9 +79,6 @@ public class MyLocation implements LocationListener {
         }
 
 
-        /*criteria = new Criteria();
-        criteria.setAccuracy(Criteria.ACCURACY_FINE);
-        provider = locationManager.getBestProvider(criteria, true);*/
         if (ActivityCompat.checkSelfPermission(context,
                 Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                 ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -96,10 +93,6 @@ public class MyLocation implements LocationListener {
             // for ActivityCompat#requestPermissions for more details.
             return;
         }
-
-        //locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
-
-
 
     }
 
@@ -117,11 +110,8 @@ public class MyLocation implements LocationListener {
         double lon = (double) (location.getLongitude());/// * 1E6);
         double lat = (double) (location.getLatitude());// * 1E6);
 
-//      int lontitue = (int) lon;
-//      int latitute = (int) lat;
         latitude = lat;
         longitude = lon;
-
     }
 
     @Override

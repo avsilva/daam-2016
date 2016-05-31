@@ -176,7 +176,7 @@
                 android:layout_height="wrap_content"
                 android:inputType="number"
                 android:id="@+id/etMudarRaio"
-                android:text="0" />
+                android:singleLine="true" />
 
         </LinearLayout>
 

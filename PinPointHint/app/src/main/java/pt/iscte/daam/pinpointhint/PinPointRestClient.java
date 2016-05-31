@@ -2,7 +2,7 @@ package pt.iscte.daam.pinpointhint;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -14,6 +14,8 @@ import android.widget.Toast;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.Circle;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -21,8 +23,6 @@ import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
 import com.google.maps.android.clustering.view.DefaultClusterRenderer;
 import com.google.maps.android.geojson.GeoJsonLayer;
-import com.google.maps.android.ui.BubbleIconFactory;
-import com.google.maps.android.ui.IconGenerator;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -37,7 +37,6 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
@@ -84,14 +83,6 @@ public class PinPointRestClient
 
         String queryString = "?dist="+mySearchRadius+"&point="+myLatLng.longitude+","+myLatLng.latitude;
         mGeoJsonFilterUrl = mGeoJsonUrl+queryString;
-
-        /*try {
-            url = new URL(mGeoJsonUrl);
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }*/
-
-
     }
 
     protected GoogleMap getMap() {
@@ -102,11 +93,9 @@ public class PinPointRestClient
         SharedPreferences sharedPreferences = mcontext.getSharedPreferences("user_data", mcontext.MODE_PRIVATE);
         int raio = sharedPreferences.getInt("raio", 5000);
         return raio;
-
     }
 
     private LatLng getMyLocation(){
-
         MyLocation appLocationManager = new MyLocation(myContext);
         Double myLat = appLocationManager.getLatitude();
         Double myLon = appLocationManager.getLongitude();
@@ -114,17 +103,10 @@ public class PinPointRestClient
 
     }
 
-    public void getPins(){
-        getPinPoints points = new getPinPoints();
-        points.execute();
-    }
-
     public void getClusters(){
         LoadGeoJsonPins downloadGeoJsonPins = new LoadGeoJsonPins(this);
-        //downloadGeoJsonPins.execute(mGeoJsonUrl);
         downloadGeoJsonPins.execute(mGeoJsonFilterUrl);
     }
-
 
     public void addNewPinPoint(JSONObject myJsonPin){
         addPinPoint point = new addPinPoint();
@@ -135,12 +117,9 @@ public class PinPointRestClient
         return items;
     }
 
-
     public JSONObject getJSONPins(){
         return jsonPins;
     }
-
-
 
     public ClusterManager<Pin> getClusterManager(){
         return mClusterManager;
@@ -225,13 +204,11 @@ public class PinPointRestClient
         }
     }
 
-
     private class MyCustomAdapterForItems implements GoogleMap.InfoWindowAdapter {
 
         @Override
         public View getInfoWindow(Marker marker) {
 
-            //Toast.makeText(myContext, "getInfoWindow " + marker.getTitle(), Toast.LENGTH_LONG).show();
             return null;
         }
 
@@ -243,9 +220,6 @@ public class PinPointRestClient
             if (clickedClusterItem != null) {
                 title = clickedClusterItem.getDescr();
                 type_name = clickedClusterItem.getTypeName();
-                /*for (Pin item : clickedClusterItem.getItems()) {
-                    // Extract data from each item in the cluster as needed
-                }*/
             }
             // Getting view from the layout file info_window_layout
             LayoutInflater inflater = (LayoutInflater) myContext.getSystemService( Context.LAYOUT_INFLATER_SERVICE );
@@ -260,8 +234,6 @@ public class PinPointRestClient
 
             // Returning the view containing InfoWindow contents
             return v;
-
-
         }
     }
 
@@ -302,11 +274,10 @@ public class PinPointRestClient
             return null;
         }
 
+
+
         @Override
         protected void onPostExecute(JSONObject jsonObject) {
-
-            /*Double lat = null;
-            Double lon = null;*/
 
             if (jsonObject != null) {
 
@@ -332,23 +303,9 @@ public class PinPointRestClient
 
                 setColorMap();
 
-                /*MyLocation appLocationManager = new MyLocation(myContext);
-                lat = appLocationManager.getLatitude();
-                lon = appLocationManager.getLongitude();*/
-                //appLocationManager.getLongitude();
-
                 if (((Double) myLatLng.longitude) != null && ((Double) myLatLng.latitude) != null){
-
-                    //center map
-                    //getMap().moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lat, lon), 16));
-                    getMap().moveCamera(CameraUpdateFactory.newLatLngZoom(myLatLng, 16));
-
-
-                    //show pin
-                    MarkerOptions markerOptions = new MarkerOptions();
-                    markerOptions.position(myLatLng);
-                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.blue_pin));
-                    getMap().addMarker(markerOptions);
+                    addMarkerUserLocationtoMap();
+                    addCircletoMap();
 
                 } else {
                     // Add a marker in Lisbon and move the camera
@@ -374,17 +331,24 @@ public class PinPointRestClient
                     }
                 });
 
-
-                /*mClusterManager.setOnClusterItemInfoWindowClickListener(new ClusterManager.OnClusterItemInfoWindowClickListener<Pin>() {
-                    @Override
-                    public void onClusterItemInfoWindowClick(Pin item) {
-                        Log.e(mLogTag, "onClusterItemInfoWindowClick " + item.getPosition().latitude);
-                    }
-                    // Does nothing, but you could go into the user's profile page, for example.
-                });*/
-
                 caller.onBackgroundTaskCompleted();
             }
+        }
+
+        protected void addMarkerUserLocationtoMap() {
+            getMap().moveCamera(CameraUpdateFactory.newLatLngZoom(myLatLng, 16));
+            MarkerOptions markerOptions = new MarkerOptions();
+            markerOptions.position(myLatLng);
+            markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.blue_pin));
+            getMap().addMarker(markerOptions);
+        }
+
+        protected void addCircletoMap() {
+            getMap().addCircle(new CircleOptions()
+                    .center(myLatLng)
+                    .radius(mySearchRadius)
+                    .strokeColor(Color.BLUE)
+                    .strokeWidth(2));
         }
 
         /**
@@ -414,8 +378,6 @@ public class PinPointRestClient
 
         @Override
         protected void onBeforeClusterItemRendered(Pin item, MarkerOptions markerOptions) {
-            // Draw a single pin.
-            // Set the info window to show their name.
 
             //another way to show pins
             /*IconGenerator iconFactory = new IconGenerator(myContext);
@@ -423,7 +385,6 @@ public class PinPointRestClient
             iconFactory.setContentRotation(90);
             Bitmap iconBitmap = iconFactory.makeIcon(item.getDescr());
             markerOptions.icon(BitmapDescriptorFactory.fromBitmap(iconBitmap));*/
-
 
             markerOptions.title(item.getDescr());
             markerOptions.snippet(String.valueOf(item.getIdent()));
@@ -446,7 +407,6 @@ public class PinPointRestClient
                 URL url = new URL(mGeoJsonUrl);
                 urlConnection = (HttpURLConnection) url.openConnection();
                 InputStream in = new BufferedInputStream(urlConnection.getInputStream());
-                //json = convertInputStreamToString(in);
                 pinUtils = new ActivityUtils();
                 json = pinUtils.convertInputStreamToString(in);
             } catch (IOException e) {
@@ -463,13 +423,11 @@ public class PinPointRestClient
 
                 JSONObject jobj = new JSONObject(result);
                 JSONArray poi = jobj.getJSONArray("features");
-                //hmap = new HashMap<Marker, Integer>();
                 for(int i=0; i<poi.length(); i++) {
                     JSONObject t_poi = poi.getJSONObject(i);
                     JSONObject t_poi_geometry = t_poi.getJSONObject("geometry");
                     JSONObject t_poi_properties = t_poi.getJSONObject("properties");
                     String descr = t_poi_properties.getString("descr");
-                    //String name = t_poi_properties.getString("name");
 
                     JSONArray coords =  t_poi_geometry.getJSONArray("coordinates");
                     Double lat = (Double) coords.get(1);
@@ -478,8 +436,6 @@ public class PinPointRestClient
                             .title(descr)
                             .snippet(descr)
                             .position(new LatLng(lat, lon)));
-
-                    //hmap.put(m, t_poi.getInt("id"));
                 }
 
 

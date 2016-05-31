@@ -162,19 +162,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
-
-    private void addIcon(IconGenerator iconFactory, CharSequence text, LatLng position) {
-        MarkerOptions markerOptions = new MarkerOptions().
-                icon(BitmapDescriptorFactory.fromBitmap(iconFactory.makeIcon(text))).
-                position(position).
-                anchor(iconFactory.getAnchorU(), iconFactory.getAnchorV());
-
-        mMap.addMarker(markerOptions);
-    }
-
-
-
-
     /**
      * Manipulates the map once available.
      * This callback is triggered when the map is ready to be used.
@@ -186,7 +173,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      */
     @Override
     public void onMapReady(GoogleMap map) {
-        //mMap = googleMap;
+
         if (mMap != null) {
             return;
         }
@@ -235,11 +222,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         //add pins to map via rest api call
         try {
             pins = new PinPointRestClient(getBaseContext(), mMap);
-
-            //reads data from rest api and shows simple bubbles
-            //pins.getPins();
-
-            //reads data from rest api and shows clustered pins
             pins.getClusters();
 
         } catch (IOException e) {
